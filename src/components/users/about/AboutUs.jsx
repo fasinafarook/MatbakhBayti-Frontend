@@ -14,19 +14,19 @@ const aboutCards = [
     title: "👩‍🍳 Homemade With Love",
     desc: "Crafted with heart and heritage, our dishes carry the flavors of tradition and care.",
     image:
-      "https://img.freepik.com/premium-photo/mysore-pak-sweet-food_57665-18090.jpg",
+      "/assets/about1.avif",
   },
   {
     title: "📹 Stories on YouTube",
     desc: "Explore authentic recipes and culinary stories that inspire home cooking and togetherness.",
     image:
-      "https://d1csarkz8obe9u.cloudfront.net/posterpreviews/food-vlog-youtube-thumbnail-template-design-b3e2cc89d87a061fe5ba63116062e142_screen.jpg?ts=1711666865",
+      "/assets/about2.jpg",
   },
   {
     title: "🌿 Rooted in Culture",
     desc: "Preserving generational food wisdom, one plate at a time — this is our mission.",
     image:
-      "https://tse4.mm.bing.net/th/id/OIP.X02wRpPxROZnPAP2drF_vQHaJQ?rs=1&pid=ImgDetMain&o=7&rm=3",
+      "/assets/about3.webp",
   },
 ];
 

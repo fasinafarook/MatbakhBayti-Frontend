@@ -36,9 +36,9 @@ const AsianFoodSection = () => {
       {/* Image Grid */}
      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 px-4 py-8 md:px-12 bg-white">
   {[
-    'https://img.freepik.com/free-photo/top-view-healthy-food-frame_23-2148723451.jpg',
-    'https://static.vecteezy.com/system/resources/thumbnails/033/688/674/small_2x/photos-of-indian-thali-in-indoor-studio-ai-generated-photo.jpg',
-    'https://static.vecteezy.com/system/resources/previews/036/730/843/non_2x/ai-generated-the-best-foods-to-eat-for-weight-loss-photo.jpg',
+    '/assets/asian1.avif',
+    '/assets/asian2.jpg',
+    '/assets/asian3.avif',
   ].map((url, idx) => (
     <div
       key={idx}
