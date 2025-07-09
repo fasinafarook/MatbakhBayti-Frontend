@@ -8,6 +8,7 @@ const AboutPage = () => {
   return (
     <>
    <Navbar />
+   
     <AboutUs/>
         <YouTubeSection />
 

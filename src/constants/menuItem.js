@@ -1,4 +1,4 @@
-export const featuredMenuItems = [
+export const menuItems = [
   {
     id: 1,
     name: "Chicken Biryani",
@@ -6,6 +6,7 @@ export const featuredMenuItems = [
     type: "Non-Veg",
     img: "https://static.vecteezy.com/system/resources/previews/032/241/679/non_2x/indian-food-is-a-popular-choice-for-many-people-ai-generated-free-photo.jpg",
     description: "Aromatic basmati rice with tender chicken",
+    category: "Main Course",
     rating: 4.8,
     reviews: 156,
     cookTime: "45 mins",
@@ -19,6 +20,7 @@ export const featuredMenuItems = [
     type: "Veg",
     img: "https://img.freepik.com/premium-photo/assorted-south-indian-breakfast-foods-wooden-background-ghee-dosa-uttappammedhu-vadapongalpodi-idly-chutney-dishes-appetizers-indian-cuisine_726363-350.jpg?w=2000",
     description: "Crispy South Indian crepe with spiced potato",
+    category: "Main Course",
     rating: 4.6,
     reviews: 89,
     cookTime: "20 mins",
@@ -32,6 +34,7 @@ export const featuredMenuItems = [
     type: "Non-Veg",
     img: "https://wallpapercave.com/wp/wp8465834.jpg",
     description: "Rich and creamy tomato-based curry",
+    category: "Breakfast",
     rating: 4.9,
     reviews: 203,
     cookTime: "35 mins",
@@ -45,6 +48,7 @@ export const featuredMenuItems = [
     type: "Veg",
     img: "https://png.pngtree.com/background/20230528/original/pngtree-table-with-many-indian-foods-picture-image_2778309.jpg",
     description: "Grilled cottage cheese with aromatic spices",
+    category: "Breakfast",
     rating: 4.5,
     reviews: 67,
     cookTime: "25 mins",
@@ -59,6 +63,7 @@ export const featuredMenuItems = [
     img: "https://i.pinimg.com/originals/04/5d/82/045d82a86281fe45831a02aaa0b0f0ab.jpg",
     description: "Traditional coastal fish curry with coconut",
     rating: 4.7,
+    category: "Appetizers",
     reviews: 124,
     cookTime: "40 mins",
     isPopular: true,
@@ -71,6 +76,7 @@ export const featuredMenuItems = [
     type: "Veg",
     img: "https://wallpapercave.com/wp/wp7845937.jpg",
     description: "Crispy triangular pastry with spiced potatoes",
+    category: "Snacks",
     rating: 4.4,
     reviews: 45,
     cookTime: "15 mins",
