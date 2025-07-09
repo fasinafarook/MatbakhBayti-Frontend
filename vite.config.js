@@ -10,4 +10,5 @@ export default defineConfig({
   build: {
     sourcemap: false, // ⛔ Turn off source maps
   },
+  
 });
