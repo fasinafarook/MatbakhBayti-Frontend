@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { FiMenu, FiX } from "react-icons/fi";
 import { Link } from "react-router-dom";
+
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-
   const toggleMenu = () => setIsOpen(!isOpen);
 
   return (
@@ -32,16 +32,26 @@ const Navbar = () => {
           <li className="hover:text-yellow-400 cursor-pointer transition">
             <Link to="/about">About</Link>
           </li>
-
           <li className="hover:text-yellow-400 cursor-pointer transition">
             <Link to="/contact">Contact</Link>
           </li>
         </ul>
 
-        {/* CTA Button */}
-        <button className="hidden md:block bg-yellow-400 text-black text-sm font-semibold py-2 px-4 rounded-full hover:bg-yellow-300 transition">
-          Order Now
-        </button>
+        {/* Desktop Buttons */}
+        <div className="hidden md:flex gap-3">
+          <Link
+            to="/login"
+            className="text-sm font-semibold py-2 px-4 border border-yellow-400 text-yellow-400 rounded-full hover:bg-yellow-500/10 transition"
+          >
+            Login
+          </Link>
+          {/* <Link
+            to="/order"
+            className="bg-yellow-400 text-black text-sm font-semibold py-2 px-4 rounded-full hover:bg-yellow-300 transition"
+          >
+            Order Now
+          </Link> */}
+        </div>
 
         {/* Mobile Menu Toggle */}
         <div className="md:hidden">
@@ -51,28 +61,38 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile Dropdown Menu */}
       {isOpen && (
         <div className="md:hidden bg-black/95 text-white px-6 pb-6">
-          <ul className="space-y-4 text-sm font-medium">
+          <ul className="space-y-4 text-sm font-medium pt-4">
             <li className="hover:text-yellow-400 cursor-pointer transition">
-              <Link to="/">Home</Link>
-            </li>
-
-            <li className="hover:text-yellow-400 cursor-pointer transition">
-              <Link to="/menu">Menu</Link>
+              <Link to="/" onClick={() => setIsOpen(false)}>Home</Link>
             </li>
             <li className="hover:text-yellow-400 cursor-pointer transition">
-              <Link to="/about">About</Link>
+              <Link to="/menu" onClick={() => setIsOpen(false)}>Menu</Link>
             </li>
-
             <li className="hover:text-yellow-400 cursor-pointer transition">
-              <Link to="/contact">Contact</Link>
+              <Link to="/about" onClick={() => setIsOpen(false)}>About</Link>
+            </li>
+            <li className="hover:text-yellow-400 cursor-pointer transition">
+              <Link to="/contact" onClick={() => setIsOpen(false)}>Contact</Link>
             </li>
           </ul>
-          <button className="mt-4 bg-yellow-400 text-black text-sm font-semibold py-2 px-4 rounded-full w-full hover:bg-yellow-300 transition">
+
+          <Link
+            to="/login"
+            onClick={() => setIsOpen(false)}
+            className="mt-6 block text-center border border-yellow-400 text-yellow-400 text-sm font-semibold py-2 rounded-full hover:bg-yellow-500/10 transition"
+          >
+            Login
+          </Link>
+          {/* <Link
+            to="/order"
+            onClick={() => setIsOpen(false)}
+            className="mt-3 block text-center bg-yellow-400 text-black text-sm font-semibold py-2 rounded-full hover:bg-yellow-300 transition"
+          >
             Order Now
-          </button>
+          </Link> */}
         </div>
       )}
     </nav>
