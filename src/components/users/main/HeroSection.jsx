@@ -90,7 +90,7 @@ const HeroSection = () => {
                 className="space-y-4"
                 style={{ transform: "translateZ(40px)" }}
               >
-                <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold leading-tight tracking-wide">
+<h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-tight tracking-wide">
                   <motion.span
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
