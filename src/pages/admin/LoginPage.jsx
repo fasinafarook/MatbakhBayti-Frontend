@@ -45,7 +45,6 @@ export default function AdminLogin() {
       </div>
 
       <div className="w-full max-w-md relative z-10">
-        {/* Logo Section with Glass Effect */}
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-3 mb-4 p-4 rounded-2xl backdrop-blur-md bg-white/5 border border-white/10 shadow-2xl">
             <img
