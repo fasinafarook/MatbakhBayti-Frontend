@@ -47,11 +47,10 @@ const Navbar = () => {
         {/* Center: Nav Links */}
         <div className="absolute left-1/2 transform -translate-x-1/2 hidden md:flex space-x-6 text-sm font-medium text-gray-300">
           <Link to="/" className="hover:text-yellow-400 transition">Home</Link>
-          <Link to="/services" className="hover:text-yellow-400 transition">Services</Link>
-          <Link to="/blog" className="hover:text-yellow-400 transition">Blog</Link>
+          <Link to="/menu" className="hover:text-yellow-400 transition">Menu</Link>
           <Link to="/about" className="hover:text-yellow-400 transition">About</Link>
+          <Link to="/contact" className="hover:text-yellow-400 transition">Contact</Link>
         </div>
-
         {/* Right: Auth Button */}
         <div className="hidden md:flex items-center space-x-4">
           {isAuthenticated ? (
@@ -86,9 +85,9 @@ const Navbar = () => {
       {isOpen && (
         <div className="md:hidden bg-black/95 text-white px-6 pb-6 space-y-3">
           <Link to="/" className="block hover:text-yellow-400 transition" onClick={toggleMenu}>Home</Link>
-          <Link to="/services" className="block hover:text-yellow-400 transition" onClick={toggleMenu}>Services</Link>
-          <Link to="/blog" className="block hover:text-yellow-400 transition" onClick={toggleMenu}>Blog</Link>
+          <Link to="/menu" className="block hover:text-yellow-400 transition" onClick={toggleMenu}>Menu</Link>
           <Link to="/about" className="block hover:text-yellow-400 transition" onClick={toggleMenu}>About</Link>
+          <Link to="/contact" className="block hover:text-yellow-400 transition" onClick={toggleMenu}>Contact</Link>
 
           {isAuthenticated ? (
             <button
