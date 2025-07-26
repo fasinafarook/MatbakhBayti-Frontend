@@ -7,13 +7,13 @@ import { getMenuItems } from "../../../api/user/userApi"; // ✅ adjust the impo
 
 const MenuHomeSection = () => {
   const [menuItems, setMenuItems] = useState([]);
-  
+
   useEffect(() => {
     const fetchMenu = async () => {
       try {
         const res = await getMenuItems();
         const allItems = res.data.data;
-        const lastSixItems = allItems.slice(-6); // ✅ Get only the last 6 items
+        const lastSixItems = allItems.slice(-6); 
         setMenuItems(lastSixItems);
       } catch (error) {
         console.error("Error fetching menu items:", error);
