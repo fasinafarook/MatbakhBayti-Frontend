@@ -1,13 +1,32 @@
-"use client"
-import { motion } from "framer-motion"
-import { ChefHat, ArrowRight, Award, Star } from "lucide-react"
-import { menuItems } from "../../../constants/menuItem"
-import MenuCard from "../menu/MenuCard" 
+"use client";
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { ChefHat, ArrowRight, Award, Star } from "lucide-react";
+import MenuCard from "../menu/MenuCard";
+import { getMenuItems } from "../../../api/user/userApi"; // ✅ adjust the import path accordingly
 
 const MenuHomeSection = () => {
+  const [menuItems, setMenuItems] = useState([]);
+
+  useEffect(() => {
+    const fetchMenu = async () => {
+      try {
+        const res = await getMenuItems();
+        const allItems = res.data.data;
+        const lastSixItems = allItems.slice(-6); 
+        setMenuItems(lastSixItems);
+      } catch (error) {
+        console.error("Error fetching menu items:", error);
+        setMenuItems([]);
+      }
+    };
+
+    fetchMenu();
+  }, []);
+
   const handleViewFullMenu = () => {
-    window.location.href = "/menu"
-  }
+    window.location.href = "/menu";
+  };
 
   return (
     <section className="py-16 px-6 md:px-20 bg-black text-white overflow-hidden">
@@ -33,17 +52,20 @@ const MenuHomeSection = () => {
           Our <span className="text-yellow-400">Signature</span> Menu
         </h2>
         <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-          Discover our most loved dishes crafted with authentic recipes and fresh ingredients
+          Discover our most loved dishes crafted with authentic recipes and
+          fresh ingredients
         </p>
       </motion.div>
 
-      {/* ✅ Render the imported MenuCard component */}
+      {/* ✅ Render fetched items */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-        {menuItems.map((item, index) => (
-          <MenuCard key={item.id} item={item} index={index} />
-        ))}
+        {Array.isArray(menuItems) &&
+          menuItems.map((item, index) => (
+            <MenuCard key={item._id} item={item} index={index} />
+          ))}
       </div>
 
+      {/* ✅ CTA section */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -63,8 +85,12 @@ const MenuHomeSection = () => {
                 <ChefHat className="w-6 h-6 text-black" />
               </motion.div>
               <div className="text-left">
-                <h3 className="text-xl font-bold text-white">Craving for More?</h3>
-                <p className="text-gray-400 text-sm">Explore our complete menu with 50+ dishes</p>
+                <h3 className="text-xl font-bold text-white">
+                  Craving for More?
+                </h3>
+                <p className="text-gray-400 text-sm">
+                  Explore our complete menu with 50+ dishes
+                </p>
               </div>
             </div>
 
@@ -97,7 +123,7 @@ const MenuHomeSection = () => {
         </div>
       </motion.div>
     </section>
-  )
-}
+  );
+};
 
-export default MenuHomeSection
+export default MenuHomeSection;

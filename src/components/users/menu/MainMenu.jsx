@@ -1,58 +1,104 @@
-"use client"
-import { useState } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import { Star, Plus, Minus, ShoppingCart, Clock, Search, ChefHat, X, Leaf, Fish, Eye } from "lucide-react"
-import { menuItems } from "../../../constants/menuItem"
-import { categories } from "../../../constants/category"
+"use client";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Star,
+  Plus,
+  Minus,
+  ShoppingCart,
+  Clock,
+  Search,
+  ChefHat,
+  X,
+  Leaf,
+  Fish,
+  Eye,
+} from "lucide-react";
 
-
+import { getMenuItems, getAllCategories } from "../../../api/user/userApi";
 
 const MainMenu = () => {
-  const [selectedCategory, setSelectedCategory] = useState("All")
-  const [searchQuery, setSearchQuery] = useState("")
-  const [cart, setCart] = useState([])
-  const [isCartOpen, setIsCartOpen] = useState(false)
-  const [selectedItem, setSelectedItem] = useState(null)
+  const [cart, setCart] = useState([]);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [menuItems, setMenuItems] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [searchQuery, setSearchQuery] = useState("");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [productsRes, categoriesRes] = await Promise.all([
+          getMenuItems(),
+          getAllCategories(),
+        ]);
+
+        setMenuItems(productsRes.data.data); // Assuming API response structure
+        setCategories([
+          { name: "All", count: productsRes.data.data.length },
+          ...categoriesRes.data.data.map((cat) => ({
+            name: cat.name,
+            count: productsRes.data.data.filter(
+              (p) => p.category.name === cat.name
+            ).length,
+          })),
+        ]);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   // Filter items
   const filteredItems = menuItems.filter((item) => {
-    const matchesCategory = selectedCategory === "All" || item.category === selectedCategory
+    const matchesCategory =
+      selectedCategory === "All" || item.category?.name === selectedCategory;
     const matchesSearch =
       item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.description.toLowerCase().includes(searchQuery.toLowerCase())
-    return matchesCategory && matchesSearch
-  })
+      item.description.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
 
   const addToCart = (item, quantity = 1) => {
     setCart((prev) => {
-      const existing = prev.find((cartItem) => cartItem.id === item.id)
+      const existing = prev.find((cartItem) => cartItem.id === item.id);
       if (existing) {
         return prev.map((cartItem) =>
-          cartItem.id === item.id ? { ...cartItem, quantity: cartItem.quantity + quantity } : cartItem,
-        )
+          cartItem.id === item.id
+            ? { ...cartItem, quantity: cartItem.quantity + quantity }
+            : cartItem
+        );
       }
-      return [...prev, { ...item, quantity }]
-    })
-  }
+      return [...prev, { ...item, quantity }];
+    });
+  };
 
   const removeFromCart = (itemId) => {
-    setCart((prev) => prev.filter((item) => item.id !== itemId))
-  }
+    setCart((prev) => prev.filter((item) => item.id !== itemId));
+  };
 
   const updateQuantity = (itemId, newQuantity) => {
     if (newQuantity === 0) {
-      removeFromCart(itemId)
+      removeFromCart(itemId);
     } else {
-      setCart((prev) => prev.map((item) => (item.id === itemId ? { ...item, quantity: newQuantity } : item)))
+      setCart((prev) =>
+        prev.map((item) =>
+          item.id === itemId ? { ...item, quantity: newQuantity } : item
+        )
+      );
     }
-  }
+  };
 
-  const getTotalItems = () => cart.reduce((sum, item) => sum + item.quantity, 0)
+  const getTotalItems = () =>
+    cart.reduce((sum, item) => sum + item.quantity, 0);
   const getTotalPrice = () =>
     cart.reduce((sum, item) => {
-      const discountedPrice = item.price - (item.price * item.discount) / 100
-      return sum + discountedPrice * item.quantity
-    }, 0)
+      const discountedPrice = item.price - (item.price * item.discount) / 100;
+      return sum + discountedPrice * item.quantity;
+    }, 0);
 
   return (
     <div className="min-h-screen bg-black">
@@ -61,9 +107,7 @@ const MainMenu = () => {
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             {/* Brand */}
-            <div className="flex items-center space-x-3">
-              
-            </div>
+            <div className="flex items-center space-x-3"></div>
 
             {/* Cart Button */}
             <button
@@ -101,7 +145,9 @@ const MainMenu = () => {
           {/* Categories Sidebar */}
           <div className="lg:col-span-1">
             <div className="sticky top-32">
-              <h3 className="text-lg font-semibold text-white mb-4">Categories</h3>
+              <h3 className="text-lg font-semibold text-white mb-4">
+                Categories
+              </h3>
               <div className="space-y-2">
                 {categories.map((category) => (
                   <button
@@ -116,7 +162,11 @@ const MainMenu = () => {
                     <div className="flex items-center justify-between">
                       <span className="font-medium">{category.name}</span>
                       <span
-                        className={`text-sm ${selectedCategory === category.name ? "text-black" : "text-gray-500"}`}
+                        className={`text-sm ${
+                          selectedCategory === category.name
+                            ? "text-black"
+                            : "text-gray-500"
+                        }`}
                       >
                         {category.count}
                       </span>
@@ -133,7 +183,9 @@ const MainMenu = () => {
               <h2 className="text-2xl font-bold text-white">
                 {selectedCategory === "All" ? "All Dishes" : selectedCategory}
               </h2>
-              <p className="text-gray-400 mt-1">{filteredItems.length} items available</p>
+              <p className="text-gray-400 mt-1">
+                {filteredItems.length} items available
+              </p>
             </div>
 
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -152,11 +204,13 @@ const MainMenu = () => {
 
             {filteredItems.length === 0 && (
               <div className="text-center py-12">
-                <div className="text-gray-400 text-lg mb-4">No dishes found</div>
+                <div className="text-gray-400 text-lg mb-4">
+                  No dishes found
+                </div>
                 <button
                   onClick={() => {
-                    setSearchQuery("")
-                    setSelectedCategory("All")
+                    setSearchQuery("");
+                    setSelectedCategory("All");
                   }}
                   className="text-yellow-400 hover:text-yellow-300 font-medium"
                 >
@@ -188,7 +242,10 @@ const MainMenu = () => {
               <div className="p-6">
                 <div className="flex items-center justify-between mb-6">
                   <h3 className="text-xl font-bold text-white">Your Order</h3>
-                  <button onClick={() => setIsCartOpen(false)} className="text-gray-400 hover:text-gray-300">
+                  <button
+                    onClick={() => setIsCartOpen(false)}
+                    className="text-gray-400 hover:text-gray-300"
+                  >
                     <X className="w-6 h-6" />
                   </button>
                 </div>
@@ -212,19 +269,29 @@ const MainMenu = () => {
                             className="w-12 h-12 object-cover rounded"
                           />
                           <div className="flex-1">
-                            <h4 className="font-medium text-white">{item.name}</h4>
-                            <p className="text-sm text-gray-400">₹{item.price}</p>
+                            <h4 className="font-medium text-white">
+                              {item.name}
+                            </h4>
+                            <p className="text-sm text-gray-400">
+                              ₹{item.price}
+                            </p>
                           </div>
                           <div className="flex items-center space-x-2">
                             <button
-                              onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                              onClick={() =>
+                                updateQuantity(item.id, item.quantity - 1)
+                              }
                               className="w-8 h-8 flex items-center justify-center border border-gray-600 rounded hover:bg-gray-800 text-white"
                             >
                               <Minus className="w-4 h-4" />
                             </button>
-                            <span className="w-8 text-center font-medium text-white">{item.quantity}</span>
+                            <span className="w-8 text-center font-medium text-white">
+                              {item.quantity}
+                            </span>
                             <button
-                              onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                              onClick={() =>
+                                updateQuantity(item.id, item.quantity + 1)
+                              }
                               className="w-8 h-8 flex items-center justify-center border border-gray-600 rounded hover:bg-gray-800 text-white"
                             >
                               <Plus className="w-4 h-4" />
@@ -236,8 +303,12 @@ const MainMenu = () => {
 
                     <div className="border-t border-gray-700 pt-4">
                       <div className="flex justify-between items-center mb-4">
-                        <span className="text-lg font-semibold text-white">Total</span>
-                        <span className="text-xl font-bold text-yellow-400">₹{getTotalPrice()}</span>
+                        <span className="text-lg font-semibold text-white">
+                          Total
+                        </span>
+                        <span className="text-xl font-bold text-yellow-400">
+                          ₹{getTotalPrice()}
+                        </span>
                       </div>
                       <button className="w-full bg-yellow-400 text-black hover:bg-yellow-500 py-3 font-semibold rounded-lg transition-colors">
                         Proceed to Checkout
@@ -269,14 +340,19 @@ const MainMenu = () => {
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex justify-between items-start mb-4">
-                <h3 className="text-2xl font-bold text-white">{selectedItem.name}</h3>
-                <button onClick={() => setSelectedItem(null)} className="text-gray-400 hover:text-gray-300">
+                <h3 className="text-2xl font-bold text-white">
+                  {selectedItem.name}
+                </h3>
+                <button
+                  onClick={() => setSelectedItem(null)}
+                  className="text-gray-400 hover:text-gray-300"
+                >
                   <X className="w-6 h-6" />
                 </button>
               </div>
 
               <img
-                src={selectedItem.img || "/placeholder.svg"}
+                src={selectedItem.image || "/placeholder.svg"}
                 alt={selectedItem.name}
                 className="w-full h-64 object-cover rounded-lg mb-4"
               />
@@ -287,7 +363,9 @@ const MainMenu = () => {
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div className="flex items-center space-x-2">
                     <Clock className="w-4 h-4 text-gray-400" />
-                    <span className="text-gray-300">{selectedItem.cookTime}</span>
+                    <span className="text-gray-300">
+                      {selectedItem.preparationTime}
+                    </span>
                   </div>
                   <div className="flex items-center space-x-2">
                     {selectedItem.type === "Veg" ? (
@@ -297,32 +375,18 @@ const MainMenu = () => {
                     )}
                     <span className="text-gray-300">{selectedItem.type}</span>
                   </div>
-                  <div className="flex items-center space-x-1">
-                    <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                    <span className="text-gray-300">
-                      {selectedItem.rating} ({selectedItem.reviews} reviews)
-                    </span>
-                  </div>
                 </div>
 
                 <div className="flex items-center justify-between pt-4 border-t border-gray-700">
                   <div>
                     <div className="text-2xl font-bold text-yellow-400">
                       ₹{selectedItem.price}
-                      {selectedItem.discount > 0 && (
-                        <span className="text-gray-500 line-through text-lg ml-2">₹{selectedItem.originalPrice}</span>
-                      )}
                     </div>
-                    {selectedItem.discount > 0 && (
-                      <div className="text-green-400 text-sm">
-                        Save ₹{selectedItem.originalPrice - selectedItem.price}
-                      </div>
-                    )}
                   </div>
                   <button
                     onClick={() => {
-                      addToCart(selectedItem)
-                      setSelectedItem(null)
+                      addToCart(selectedItem);
+                      setSelectedItem(null);
                     }}
                     className="bg-yellow-400 text-black hover:bg-yellow-500 px-6 py-2 font-semibold rounded-lg transition-colors"
                   >
@@ -335,19 +399,19 @@ const MainMenu = () => {
         )}
       </AnimatePresence>
     </div>
-  )
-}
+  );
+};
 
 const SimpleMenuCard = ({ item, index, onAddToCart, onViewDetails }) => {
-  const [quantity, setQuantity] = useState(1)
+  const [quantity, setQuantity] = useState(1);
 
-  const increment = () => setQuantity((q) => q + 1)
-  const decrement = () => setQuantity((q) => (q > 1 ? q - 1 : 1))
+  const increment = () => setQuantity((q) => q + 1);
+  const decrement = () => setQuantity((q) => (q > 1 ? q - 1 : 1));
 
   const handleAddToCart = () => {
-    onAddToCart(item, quantity)
-    setQuantity(1)
-  }
+    onAddToCart(item, quantity);
+    setQuantity(1);
+  };
 
   return (
     <motion.div
@@ -374,7 +438,7 @@ const SimpleMenuCard = ({ item, index, onAddToCart, onViewDetails }) => {
       {/* Image */}
       <div className="relative overflow-hidden">
         <img
-          src={item.img || "/placeholder.svg"}
+          src={item.image || "/placeholder.svg"}
           alt={item.name}
           className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
         />
@@ -393,33 +457,34 @@ const SimpleMenuCard = ({ item, index, onAddToCart, onViewDetails }) => {
           <div className="flex-1">
             <div className="flex items-center space-x-2 mb-1">
               <h3 className="font-semibold text-white">{item.name}</h3>
+            </div>
+            <div className="flex items-center space-x-2">
               {item.type === "Veg" ? (
                 <Leaf className="w-4 h-4 text-green-400" />
               ) : (
                 <Fish className="w-4 h-4 text-red-400" />
               )}
+              <span className="text-gray-300">{item.type}</span>
             </div>
-            <p className="text-sm text-gray-400 line-clamp-2">{item.description}</p>
+            <p className="text-sm text-gray-400 line-clamp-2">
+              {item.description}
+            </p>
           </div>
         </div>
 
         {/* Rating & Time */}
         <div className="flex items-center justify-between text-sm">
-          <div className="flex items-center space-x-1">
-            <Star className="w-4 h-4 text-yellow-400 fill-current" />
-            <span className="text-gray-300">{item.rating}</span>
-            <span className="text-gray-500">({item.reviews})</span>
-          </div>
           <div className="flex items-center space-x-1 text-gray-400">
             <Clock className="w-4 h-4" />
-            <span>{item.cookTime}</span>
+            <span>{item.preparationTime}</span>
           </div>
         </div>
 
         {/* Price */}
         <div className="flex items-center space-x-2">
-          <span className="text-xl font-bold text-yellow-400">₹{item.price}</span>
-          {item.discount > 0 && <span className="text-gray-500 line-through">₹{item.originalPrice}</span>}
+          <span className="text-xl font-bold text-yellow-400">
+            ₹{item.price}
+          </span>
         </div>
 
         {/* Actions */}
@@ -432,7 +497,9 @@ const SimpleMenuCard = ({ item, index, onAddToCart, onViewDetails }) => {
             >
               <Minus className="w-4 h-4" />
             </button>
-            <span className="w-8 text-center font-medium text-white">{quantity}</span>
+            <span className="w-8 text-center font-medium text-white">
+              {quantity}
+            </span>
             <button
               onClick={increment}
               className="w-8 h-8 flex items-center justify-center border border-gray-600 rounded hover:bg-gray-800 text-white"
@@ -452,7 +519,7 @@ const SimpleMenuCard = ({ item, index, onAddToCart, onViewDetails }) => {
         </div>
       </div>
     </motion.div>
-  )
-}
+  );
+};
 
-export default MainMenu
+export default MainMenu;

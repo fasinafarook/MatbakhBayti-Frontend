@@ -26,3 +26,12 @@ export const refreshAccessToken = async () => {
 export const logoutUser = async () => {
   return await API.post("/user/logout");
 };
+
+
+export const getMenuItems = async () => {
+  return await API.get("/user/products"); 
+};
+export const getAllCategories = async () => {
+  return await API.get("/user/category");
+};
+
