@@ -11,7 +11,7 @@ export default function App() {
       <BrowserRouter>
       <ScrollToTop /> 
       <UserAuthProvider>
-         <div className="pt-16">
+         <div className="pt-0">
         <AdminRoutes /> 
         <UserRoutes /> 
         </div>
