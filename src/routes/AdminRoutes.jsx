@@ -1,6 +1,6 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
-import AdminLogin from "../pages/admin/loginPage";
+import AdminLogin from "../pages/admin/AdminLoginPage";
 import { AdminDashboard } from "../pages/admin/AdminPage";
 
 import { DashboardOverview } from "../components/admin/Dashboard-Overview";
