@@ -12,7 +12,6 @@ import { Settings } from "../components/admin/settings";
 import CategoryManagement from "../components/admin/CategoryManagement";
 
 
-import AdminLogin from "../pages/admin/LoginPage";
 
 const AdminRoutes = () => {
   return (
