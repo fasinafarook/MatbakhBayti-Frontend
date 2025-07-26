@@ -1,7 +1,7 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 import { AdminDashboard } from "../pages/admin/AdminPage";
-import AdminLogin from "../pages/admin/loginPage";
+import AdminLogin from "../pages/admin/LoginPage";
 const AdminRoutes = () => {
   return (
     <Routes>
