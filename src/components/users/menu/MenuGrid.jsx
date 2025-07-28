@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { ChefHat, ArrowRight, Award, Star } from "lucide-react";
 import MenuCard from "../menu/MenuCard";
-import { getMenuItems } from "../../../api/user/userApi"; // ✅ adjust the import path accordingly
+import { getMenuItems } from "../../../api/user/userApi"; 
 
 const MenuHomeSection = () => {
   const [menuItems, setMenuItems] = useState([]);
