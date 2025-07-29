@@ -23,9 +23,7 @@ const Navbar = () => {
   const handleLogout = async () => {
   try {
     await logoutUser(); 
-    localStorage.removeItem("userToken"); 
-    localStorage.removeItem("refreshToken");
-
+    localStorage.removeItem("auth");
     dispatch(logout()); 
     Swal.fire({
       toast: true,
