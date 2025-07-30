@@ -136,7 +136,10 @@ const Navbar = () => {
                 👋 Hi, {user?.name || "User"}
               </span>
               <button
-                onClick={handleLogout}
+                onClick={async () => {
+    await handleLogout(); // ✅ await in an async function
+    setIsOpen(false);
+  }}
                 className="text-sm font-semibold py-2 px-4 border border-red-500 text-red-500 rounded-full hover:bg-red-500/10 transition"
               >
                 Logout
@@ -204,10 +207,10 @@ const Navbar = () => {
 
           {isAuthenticated ? (
             <button
-              onClick={() => {
-                handleLogout();
-                setIsOpen(false);
-              }}
+             onClick={async () => {
+    await handleLogout(); // ✅ await in an async function
+    setIsOpen(false);
+  }}
               className="mt-6 w-full text-center border border-red-500 text-red-500 text-sm font-semibold py-2 rounded-full hover:bg-red-500/10 transition"
             >
               Logout
