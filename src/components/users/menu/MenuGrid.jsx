@@ -3,17 +3,23 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { ChefHat, ArrowRight, Award, Star } from "lucide-react";
 import MenuCard from "../menu/MenuCard";
-import { getMenuItems } from "../../../api/user/userApi"; 
+import { AnimatePresence } from "framer-motion";
+import { getMenuItems } from "../../../api/user/userApi";
+import ItemDetailsModal from "./ItemDetailsModal";
+import AuthModal from "../authenticationModal/Modal";
 
 const MenuHomeSection = () => {
   const [menuItems, setMenuItems] = useState([]);
-
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const handleOpenAuthModal = () => setShowAuthModal(true);
+  const handleCloseAuthModal = () => setShowAuthModal(false);
   useEffect(() => {
     const fetchMenu = async () => {
       try {
         const res = await getMenuItems();
         const allItems = res.data.data;
-        const lastSixItems = allItems.slice(-6); 
+        const lastSixItems = allItems.slice(-6);
         setMenuItems(lastSixItems);
       } catch (error) {
         console.error("Error fetching menu items:", error);
@@ -61,9 +67,25 @@ const MenuHomeSection = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
         {Array.isArray(menuItems) &&
           menuItems.map((item, index) => (
-            <MenuCard key={item._id} item={item} index={index} />
+            <MenuCard
+              key={item._id}
+              item={item}
+              index={index}
+              setSelectedItem={setSelectedItem}
+              openAuthModal={handleOpenAuthModal}
+            />
           ))}
       </div>
+      <AnimatePresence>
+        {selectedItem && (
+          <ItemDetailsModal
+            item={selectedItem}
+            onClose={() => setSelectedItem(null)}
+            openAuthModal={handleOpenAuthModal}
+          />
+        )}
+      </AnimatePresence>
+      {showAuthModal && <AuthModal closeModal={handleCloseAuthModal} />}
 
       {/* ✅ CTA section */}
       <motion.div

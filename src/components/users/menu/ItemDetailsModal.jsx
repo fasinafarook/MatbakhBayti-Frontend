@@ -1,41 +1,20 @@
 import { motion } from "framer-motion";
 import { Clock, X, Leaf, Fish } from "lucide-react";
+import { handleAddToCart } from "../utils/userAddToCart";
+import { useDispatch, useSelector } from "react-redux";
 
-const ItemDetailsModal = ({ item, onClose }) => {
-  
- const handleAddToCart = async (customItem = item, customQuantity = quantity) => {
-    try {
-      const updatedCart = await addItemToCart(customItem._id, customQuantity);
-      const formattedItems = updatedCart.items.map((i) => ({
-        id: i.product._id,
-        name: i.product.name,
-        price: i.product.price,
-        quantity: i.quantity,
-        image: i.product.image,
-      }));
+const ItemDetailsModal = ({ item, onClose, openAuthModal }) => {
+  const dispatch = useDispatch();
+  const cartItems = useSelector((state) => state.cart.items);
+  const user = useSelector((state) => state.auth?.user);
 
-      dispatch(setCart(formattedItems));
-
-      Swal.fire({
-        toast: true,
-        icon: "success",
-        title: `${customQuantity} × ${customItem.name} added to cart`,
-        position: "top-end",
-        showConfirmButton: false,
-        timer: 1500,
-        background: "#222",
-        color: "#fff",
-      });
-    } catch (err) {
-      console.error("Add to cart failed:", err);
-      Swal.fire({
-        icon: "error",
-        title: "Failed to add to cart",
-        text: err?.response?.data?.message || "Something went wrong",
-      });
+  const handleAdd = () => {
+    if (!user) {
+      openAuthModal(); 
+      return;
     }
-        onClose();
 
+    handleAddToCart(item, 1, dispatch, () => {}, cartItems, onClose);
   };
 
   return (
@@ -55,7 +34,10 @@ const ItemDetailsModal = ({ item, onClose }) => {
       >
         <div className="flex justify-between items-start mb-4">
           <h3 className="text-2xl font-bold text-white">{item.name}</h3>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-300">
+          <button
+            onClick={onClose}
+            className="text-gray-400 hover:text-gray-300"
+          >
             <X className="w-6 h-6" />
           </button>
         </div>
@@ -84,9 +66,11 @@ const ItemDetailsModal = ({ item, onClose }) => {
           </div>
 
           <div className="flex items-center justify-between pt-4 border-t border-gray-700">
-            <div className="text-2xl font-bold text-yellow-400">₹{item.price}</div>
+            <div className="text-2xl font-bold text-yellow-400">
+              ₹{item.price}
+            </div>
             <button
-              onClick={handleAddToCart}
+              onClick={handleAdd}
               className="bg-yellow-400 text-black hover:bg-yellow-500 px-6 py-2 font-semibold rounded-lg transition-colors"
             >
               Add to Cart

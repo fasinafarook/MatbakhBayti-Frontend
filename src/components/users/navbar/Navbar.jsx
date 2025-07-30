@@ -38,6 +38,8 @@ const Navbar = () => {
     try {
       await logoutUser();
       localStorage.removeItem("auth");
+            // localStorage.removeItem("cartItems");
+
       dispatch(logout());
       Swal.fire({
         toast: true,
