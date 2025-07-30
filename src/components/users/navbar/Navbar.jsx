@@ -35,6 +35,7 @@ const Navbar = () => {
     getCart();
   }, [isAuthenticated]);
   const handleLogout = async () => {
+
     try {
       await logoutUser();
       localStorage.removeItem("auth");
@@ -59,6 +60,30 @@ const Navbar = () => {
       });
     }
   };
+
+  try {
+    await logoutUser(); 
+    localStorage.removeItem("auth");
+    dispatch(logout()); 
+    Swal.fire({
+      toast: true,
+      position: "top-end",
+      icon: "success",
+      title: "Logged out successfully",
+      showConfirmButton: false,
+      timer: 2000,
+      timerProgressBar: true,
+    });
+  } catch (error) {
+    console.error("Logout failed:", error);
+    Swal.fire({
+      icon: "error",
+      title: "Logout failed",
+      text: error?.response?.data?.message || "Something went wrong",
+    });
+  }
+};
+
 
   return (
     <div className="bg-black text-white px-4 py-3 sticky top-0 z-50">
@@ -209,3 +234,4 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
