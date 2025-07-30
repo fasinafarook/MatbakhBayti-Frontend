@@ -35,11 +35,9 @@ const Navbar = () => {
     getCart();
   }, [isAuthenticated]);
   const handleLogout = async () => {
-
     try {
       await logoutUser();
       localStorage.removeItem("auth");
-            // localStorage.removeItem("cartItems");
 
       dispatch(logout());
       Swal.fire({
@@ -60,30 +58,6 @@ const Navbar = () => {
       });
     }
   };
-
-  try {
-    await logoutUser(); 
-    localStorage.removeItem("auth");
-    dispatch(logout()); 
-    Swal.fire({
-      toast: true,
-      position: "top-end",
-      icon: "success",
-      title: "Logged out successfully",
-      showConfirmButton: false,
-      timer: 2000,
-      timerProgressBar: true,
-    });
-  } catch (error) {
-    console.error("Logout failed:", error);
-    Swal.fire({
-      icon: "error",
-      title: "Logout failed",
-      text: error?.response?.data?.message || "Something went wrong",
-    });
-  }
-};
-
 
   return (
     <div className="bg-black text-white px-4 py-3 sticky top-0 z-50">
@@ -136,10 +110,7 @@ const Navbar = () => {
                 👋 Hi, {user?.name || "User"}
               </span>
               <button
-                onClick={async () => {
-    await handleLogout(); // ✅ await in an async function
-    setIsOpen(false);
-  }}
+                onClick={handleLogout}
                 className="text-sm font-semibold py-2 px-4 border border-red-500 text-red-500 rounded-full hover:bg-red-500/10 transition"
               >
                 Logout
@@ -207,10 +178,10 @@ const Navbar = () => {
 
           {isAuthenticated ? (
             <button
-             onClick={async () => {
-    await handleLogout(); // ✅ await in an async function
-    setIsOpen(false);
-  }}
+              onClick={() => {
+                handleLogout();
+                setIsOpen(false);
+              }}
               className="mt-6 w-full text-center border border-red-500 text-red-500 text-sm font-semibold py-2 rounded-full hover:bg-red-500/10 transition"
             >
               Logout
@@ -237,4 +208,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-
