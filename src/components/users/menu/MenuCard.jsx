@@ -1,19 +1,29 @@
 "use client";
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { motion } from "framer-motion";
-import { Star, Plus, Minus, ShoppingCart, Clock } from "lucide-react";
+import { Plus, Minus, ShoppingCart, Clock, Eye } from "lucide-react";
+import { handleAddToCart } from "../utils/userAddToCart";
 
-const MenuCard = ({ item, index }) => {
+const MenuCard = ({ item, index, setSelectedItem, openAuthModal }) => {
   const [quantity, setQuantity] = useState(1);
   const [isHovered, setIsHovered] = useState(false);
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.auth?.user);
+  const cartItems = useSelector((state) => state.cart.items);
+  console.log("user", user);
+
+  const handleAdd = () => {
+    if (!user) {
+      openAuthModal(); 
+      return;
+    }
+
+    handleAddToCart(item, 1, dispatch, () => {}, cartItems);
+  };
 
   const increment = () => setQuantity((q) => q + 1);
   const decrement = () => setQuantity((q) => (q > 1 ? q - 1 : 1));
-
-  const handleAddToCart = () => {
-    const total = item.price * quantity;
-    alert(`Added to cart: ${quantity} x ${item.name} = ₹${total.toFixed(2)}`);
-  };
 
   const isVeg = item.type === "Veg";
 
@@ -23,12 +33,7 @@ const MenuCard = ({ item, index }) => {
       whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
       transition={{ duration: 0.6, delay: index * 0.1 }}
       viewport={{ once: true }}
-      whileHover={{
-        y: -8,
-        rotateX: -3,
-        rotateY: 3,
-        scale: 1.02,
-      }}
+      whileHover={{ y: -8, rotateX: -3, rotateY: 3, scale: 1.02 }}
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
       className="group relative bg-gradient-to-br from-gray-900/50 to-gray-800/30 rounded-2xl overflow-hidden backdrop-blur-sm border border-gray-700/50 hover:border-yellow-400/50 transition-all duration-500"
@@ -65,6 +70,14 @@ const MenuCard = ({ item, index }) => {
             </div>
           </div>
         </motion.div>
+
+        {/* View Details Button */}
+        <button
+          onClick={() => setSelectedItem(item)}
+          className="absolute top-3 left-3 w-8 h-8 bg-black/80 backdrop-blur-sm rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+        >
+          <Eye className="w-4 h-4 text-yellow-400" />
+        </button>
       </div>
 
       <div className="p-5 space-y-3">
@@ -80,7 +93,9 @@ const MenuCard = ({ item, index }) => {
                 }`}
               />
             </div>
-            <p className="text-gray-400 text-sm">{item.description}</p>
+            <p className="text-sm text-gray-400 line-clamp-2">
+              {item.description}
+            </p>
           </div>
         </div>
 
@@ -93,8 +108,6 @@ const MenuCard = ({ item, index }) => {
         <div className="flex items-center justify-between pt-3 border-t border-gray-700/50">
           <div className="flex items-center space-x-2 bg-gray-800/50 rounded-full px-3 py-1">
             <motion.button
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
               onClick={decrement}
               className="w-6 h-6 flex items-center justify-center bg-gray-700 text-yellow-400 rounded-full hover:bg-yellow-400 hover:text-black transition-colors"
             >
@@ -104,18 +117,17 @@ const MenuCard = ({ item, index }) => {
               {quantity}
             </span>
             <motion.button
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
               onClick={increment}
               className="w-6 h-6 flex items-center justify-center bg-gray-700 text-yellow-400 rounded-full hover:bg-yellow-400 hover:text-black transition-colors"
             >
               <Plus className="w-3 h-3" />
             </motion.button>
           </div>
+
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            onClick={handleAddToCart}
+            onClick={handleAdd}
             className="bg-gradient-to-r from-yellow-400 to-yellow-500 text-black font-bold px-4 py-2 rounded-full hover:from-yellow-300 hover:to-yellow-400 transition-all duration-300 flex items-center space-x-1 text-sm"
           >
             <ShoppingCart className="w-3 h-3" />

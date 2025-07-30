@@ -35,3 +35,32 @@ export const getAllCategories = async () => {
   return await API.get("/user/category");
 };
 
+
+
+
+export const fetchUserCart = async () => {
+  const res = await API.get("/user/cart");
+  return res.data.data;
+};
+
+export const addItemToCart = async (productId, quantity) => {
+  const res = await API.post("/user/add-cart", { productId, quantity });
+  return res.data.data;
+};
+
+export const updateCartItemQuantity = async (productId, quantity) => {
+  const res = await API.put("/user/update-cart", { productId, quantity });
+  return res.data.data;
+};
+
+export const removeCartItem = async (productId) => {
+  const res = await API.delete("/user/remove-cart", {
+    data: { productId }, 
+  });
+  return res.data.data;
+};
+export const clearUserCart = async () => {
+  const res = await API.delete("/user/clear-cart");
+  return res.data.message;
+};
+

@@ -1,14 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FiMenu, FiX } from "react-icons/fi";
-import { ShoppingCart } from "lucide-react"; 
+import { ShoppingCart } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../../../redux/slices/userAuthSlice";
 import Swal from "sweetalert2";
 import AuthModal from "../authenticationModal/Modal";
-import { logoutUser } from "../../../api/user/userApi"; 
-import { useNavigate } from "react-router-dom";
-
+import { logoutUser } from "../../../api/user/userApi";
+import { fetchUserCart } from "../../../api/user/userApi";
+import { setCart } from "../../../redux/slices/cartAuthSlice";
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -16,11 +16,51 @@ const Navbar = () => {
   const dispatch = useDispatch();
   const { isAuthenticated, user } = useSelector((state) => state.auth);
   const { items } = useSelector((state) => state.cart);
-  const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
+  // const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
+  const totalItems = items.length;
 
   const toggleMenu = () => setIsOpen(!isOpen);
+  useEffect(() => {
+    const getCart = async () => {
+      try {
+        if (isAuthenticated) {
+          const cartData = await fetchUserCart();
+          dispatch(setCart(cartData.items || []));
+        }
+      } catch (error) {
+        console.error("Failed to load cart", error);
+      }
+    };
 
+    getCart();
+  }, [isAuthenticated]);
   const handleLogout = async () => {
+
+    try {
+      await logoutUser();
+      localStorage.removeItem("auth");
+            // localStorage.removeItem("cartItems");
+
+      dispatch(logout());
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: "success",
+        title: "Logged out successfully",
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true,
+      });
+    } catch (error) {
+      console.error("Logout failed:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Logout failed",
+        text: error?.response?.data?.message || "Something went wrong",
+      });
+    }
+  };
+
   try {
     await logoutUser(); 
     localStorage.removeItem("auth");
@@ -43,6 +83,7 @@ const Navbar = () => {
     });
   }
 };
+
 
   return (
     <div className="bg-black text-white px-4 py-3 sticky top-0 z-50">
