@@ -9,7 +9,6 @@ export const handleAddToCart = async (
   onSuccess = () => {}
 ) => {
   try {
-
     // Fetch latest cart from backend
     const cartRes = await fetchUserCart(); // returns { items: [...] }
     const backendCartItems = cartRes.items.map((cartItem) => ({
@@ -45,31 +44,6 @@ export const handleAddToCart = async (
         ];
 
     // Update Redux state
-
-    await addItemToCart(item._id, quantity);
-
-    // Optimistically update the Redux cart
-    const existingItem = cartItems?.find((i) => i.id === item._id);
-
-    let updatedCart;
-    if (existingItem) {
-      updatedCart = cartItems.map((i) =>
-        i.id === item._id ? { ...i, quantity: i.quantity + quantity } : i
-      );
-    } else {
-      updatedCart = [
-        ...cartItems,
-        {
-          id: item._id,
-          name: item.name,
-          price: item.price,
-          quantity,
-          image: item.image,
-        },
-      ];
-    }
-
-
     dispatch(setCart(updatedCart));
 
     // Show toast
