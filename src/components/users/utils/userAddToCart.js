@@ -6,41 +6,52 @@ export const handleAddToCart = async (
   item,
   quantity,
   dispatch,
-  onSuccess = () => {},
-  cartItems
+  onSuccess = () => {}
 ) => {
   try {
-    const currentCartData = await fetchUserCart();
-    const currentCart = currentCartData.items.map((i) => ({
-      id: i.product?._id,
-      name: i.product?.name,
-      price: i.product?.price,
-      quantity: i.quantity,
-      image: i.product?.image,
+    // Fetch latest cart from backend
+    const cartRes = await fetchUserCart(); // returns { items: [...] }
+    const backendCartItems = cartRes.items.map((cartItem) => ({
+      id: cartItem.product._id,
+      name: cartItem.product.name,
+      price: cartItem.product.price,
+      quantity: cartItem.quantity,
+      image: cartItem.product.image,
     }));
 
-    const existingItem = currentCart.find((i) => i.id === item._id);
+    // Check if this product already exists in backend cart
+    const existingItem = backendCartItems.find((i) => i.id === item._id);
 
+    // Add/update backend cart
     await addItemToCart(item._id, quantity);
 
-    const updatedCart = await fetchUserCart();
-    const formattedItems = updatedCart.items.map((i) => ({
-      id: i.product?._id,
-      name: i.product?.name,
-      price: i.product?.price,
-      quantity: i.quantity,
-      image: i.product?.image,
-    }));
+    // Prepare updated Redux cart
+    const updatedCart = existingItem
+      ? backendCartItems.map((i) =>
+          i.id === item._id
+            ? { ...i, quantity: i.quantity + quantity }
+            : i
+        )
+      : [
+          ...backendCartItems,
+          {
+            id: item._id,
+            name: item.name,
+            price: item.price,
+            quantity,
+            image: item.image,
+          },
+        ];
 
-    const updatedItem = formattedItems.find((i) => i.id === item._id);
+    // Update Redux state
+    dispatch(setCart(updatedCart));
 
-    dispatch(setCart(formattedItems));
-
+    // Show toast
     Swal.fire({
       toast: true,
       icon: "success",
       title: existingItem
-        ? `Updated quantity to ${updatedItem?.quantity} × ${item.name}`
+        ? `Updated quantity to ${existingItem.quantity + quantity} × ${item.name}`
         : `Added ${quantity} × ${item.name} to cart`,
       position: "top-end",
       showConfirmButton: false,

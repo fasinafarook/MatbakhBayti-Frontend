@@ -38,7 +38,6 @@ const Navbar = () => {
     try {
       await logoutUser();
       localStorage.removeItem("auth");
-            // localStorage.removeItem("cartItems");
 
       dispatch(logout());
       Swal.fire({
@@ -168,6 +167,7 @@ const Navbar = () => {
           </Link>
 
           {isAuthenticated && (
+            
             <Link
               to="/cart"
               className="block hover:text-yellow-400 transition"
@@ -178,6 +178,7 @@ const Navbar = () => {
           )}
 
           {isAuthenticated ? (
+            
             <button
               onClick={() => {
                 handleLogout();
