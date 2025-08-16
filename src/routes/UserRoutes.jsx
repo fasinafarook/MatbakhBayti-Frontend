@@ -5,8 +5,10 @@ import ContactPage from "../pages/users/ContactPage";
 import AboutPage from "../pages/users/AboutPage";
 import MenuPage from "../pages/users/MenuPage";
 import CartPage from "../pages/users/CartPage";
-
-
+import Checkout from "../pages/users/CheckOutPage";
+import Orders from "../pages/users/OrdersPage";
+import Details from "../pages/users/OrderDetailsPage";
+import NotFound from "../pages/users/404Page";
 const UserRoutes = () => {
   return (
     <>
@@ -16,7 +18,10 @@ const UserRoutes = () => {
         <Route path="/about" element={<AboutPage />} />
         <Route path="/menu" element={<MenuPage />} />
         <Route path="/cart" element={<CartPage />} />
-        <Route path="*" element={<div>404 Not Found</div>} />
+        <Route path="/checkout" element={<Checkout />} />
+        <Route path="/orders" element={<Orders />} />
+        <Route path="/orders/:orderId" element={<Details />} />
+        <Route path="*" element={<NotFound/>} />
 
       </Routes>
     </>

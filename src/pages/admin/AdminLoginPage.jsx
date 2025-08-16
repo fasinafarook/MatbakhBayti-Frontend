@@ -88,7 +88,7 @@ export default function AdminLogin() {
                   name="email"
                   type="email"
                   placeholder="admin@company.com"
-                  required
+                  
                   className="w-full h-12 px-3 backdrop-blur-md bg-white/10 border border-white/20 rounded-lg focus:border-yellow-400/50 focus:ring-2 focus:ring-yellow-400/30 focus:outline-none transition-all text-white placeholder-gray-400"
                 />
               </div>
@@ -112,7 +112,7 @@ export default function AdminLogin() {
                     name="password"
                     type={showPassword ? "text" : "password"}
                     placeholder="Enter your password"
-                    required
+                    
                     className="w-full h-12 px-3 pr-12 backdrop-blur-md bg-white/10 border border-white/20 rounded-lg focus:border-yellow-400/50 focus:ring-2 focus:ring-yellow-400/30 focus:outline-none transition-all text-white placeholder-gray-400"
                   />
                   <button

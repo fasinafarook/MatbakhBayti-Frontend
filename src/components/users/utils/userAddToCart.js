@@ -6,10 +6,46 @@ export const handleAddToCart = async (
   item,
   quantity,
   dispatch,
-  onSuccess = () => {},
-  cartItems
+  onSuccess = () => {}
 ) => {
   try {
+
+    // Fetch latest cart from backend
+    const cartRes = await fetchUserCart(); // returns { items: [...] }
+    const backendCartItems = cartRes.items.map((cartItem) => ({
+      id: cartItem.product._id,
+      name: cartItem.product.name,
+      price: cartItem.product.price,
+      quantity: cartItem.quantity,
+      image: cartItem.product.image,
+    }));
+
+    // Check if this product already exists in backend cart
+    const existingItem = backendCartItems.find((i) => i.id === item._id);
+
+    // Add/update backend cart
+    await addItemToCart(item._id, quantity);
+
+    // Prepare updated Redux cart
+    const updatedCart = existingItem
+      ? backendCartItems.map((i) =>
+          i.id === item._id
+            ? { ...i, quantity: i.quantity + quantity }
+            : i
+        )
+      : [
+          ...backendCartItems,
+          {
+            id: item._id,
+            name: item.name,
+            price: item.price,
+            quantity,
+            image: item.image,
+          },
+        ];
+
+    // Update Redux state
+
     await addItemToCart(item._id, quantity);
 
     // Optimistically update the Redux cart
@@ -33,8 +69,10 @@ export const handleAddToCart = async (
       ];
     }
 
+
     dispatch(setCart(updatedCart));
 
+    // Show toast
     Swal.fire({
       toast: true,
       icon: "success",

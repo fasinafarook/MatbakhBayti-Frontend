@@ -36,8 +36,6 @@ export const getAllCategories = async () => {
 };
 
 
-
-
 export const fetchUserCart = async () => {
   const res = await API.get("/user/cart");
   return res.data.data;
@@ -64,3 +62,36 @@ export const clearUserCart = async () => {
   return res.data.message;
 };
 
+
+export const placeOrderAPI = async ({ paymentMethod, shippingAddress }) => {
+  const res = await API.post("/user/order", { paymentMethod, shippingAddress });
+  return res.data;
+};
+
+export const fetchUserAddresses = async () => {
+  const res = await API.get("/user/addresses");
+  return res.data;
+};
+export const updateAddressAPI = async (orderId, addressData) => {
+  const response = await API.put(`/user/update-address/${orderId}`, addressData);
+  return response.data;
+};
+
+
+export const fetchUserOrders = async () => {
+  const response = await API.get('/user/orders/my-orders');
+  return response.data;
+};
+
+export const fetchOrderDetails = async (orderId) => {
+  const response = await API.get(`/user/orders/${orderId}`);
+  return response.data;
+};
+
+export const cancelOrderAPI = async (orderId) => {
+  const response = await API.patch(`/user/orders/${orderId}/cancel`);
+  return response.data;
+};
+
+export const cancelOrderItemAPI = (orderId, itemId) =>
+  API.patch(`/user/orders/${orderId}/items/${itemId}/cancel`);

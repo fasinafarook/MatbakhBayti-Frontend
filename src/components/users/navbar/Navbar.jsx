@@ -167,6 +167,7 @@ const Navbar = () => {
           </Link>
 
           {isAuthenticated && (
+            
             <Link
               to="/cart"
               className="block hover:text-yellow-400 transition"
@@ -177,6 +178,7 @@ const Navbar = () => {
           )}
 
           {isAuthenticated ? (
+            
             <button
               onClick={() => {
                 handleLogout();
