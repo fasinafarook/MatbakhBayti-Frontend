@@ -72,3 +72,19 @@ export const getAllUsers = async () => {
 
 export const toggleBlockUser = async (id) =>
   await API.patch(`/admin/user/${id}/toggle-block`);
+
+// Fetch all orders
+export const getAllOrders = async () => {
+  const response = await API.get('/admin/orders');
+  return response.data;
+};
+
+export const updateOrderStatus = async (orderId, status) => {
+  const response = await API.patch(`/admin/orders/${orderId}/status`, { status });
+  return response.data;
+};
+
+export const getDashboardData = async () => {
+  const response = await API.get("/admin/dashboard");
+  return response.data;
+};

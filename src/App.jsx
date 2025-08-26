@@ -13,7 +13,8 @@ export default function App() {
       <UserAuthProvider>
          <div className="pt-0">
         <AdminRoutes /> 
-        <UserRoutes /> 
+        <UserRoutes />
+         
         </div>
         </UserAuthProvider>
         <ToastContainer />
