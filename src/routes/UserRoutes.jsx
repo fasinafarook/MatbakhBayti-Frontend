@@ -21,7 +21,7 @@ const UserRoutes = () => {
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/orders" element={<Orders />} />
         <Route path="/orders/:orderId" element={<Details />} />
-        <Route path="*" element={<NotFound/>} />
+        {/* <Route path="*" element={<NotFound/>} /> */}
 
       </Routes>
     </>
