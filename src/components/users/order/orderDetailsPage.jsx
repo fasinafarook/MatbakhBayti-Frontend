@@ -45,7 +45,18 @@ const OrderDetailsPage = () => {
       const updatedItems = order.items.map((i) =>
         i._id === itemId ? { ...i, status: "cancelled" } : i
       );
-      setOrder({ ...order, items: updatedItems });
+
+      // Check if all items are now cancelled
+      const allCancelled = updatedItems.every(
+        (item) => item.status === "cancelled"
+      );
+
+      setOrder({
+        ...order,
+        items: updatedItems,
+        status: allCancelled ? "cancelled" : order.status,
+      });
+
       setModal({
         isOpen: true,
         title: "Success",
@@ -69,7 +80,7 @@ const OrderDetailsPage = () => {
         status: "cancelled",
         items: order.items.map((item) => ({
           ...item,
-          status: "cancelled", // Update all items to cancelled status
+          status: "cancelled",
         })),
       });
       setModal({
@@ -87,6 +98,22 @@ const OrderDetailsPage = () => {
     }
   };
 
+  // const getStatusColor = (status) => {
+  //   switch (status) {
+  //     case "pending":
+  //       return "bg-blue-100 text-blue-800";
+  //     case "confirmed":
+  //       return "bg-indigo-100 text-indigo-800";
+  //     case "shipped":
+  //       return "bg-amber-100 text-amber-800";
+  //     case "delivered":
+  //       return "bg-emerald-100 text-emerald-800";
+  //     case "cancelled":
+  //       return "bg-rose-100 text-rose-800";
+  //     default:
+  //       return "bg-gray-100 text-gray-800";
+  //   }
+  // };
   const getStatusColor = (status) => {
     switch (status) {
       case "pending":
@@ -102,6 +129,23 @@ const OrderDetailsPage = () => {
       default:
         return "bg-gray-100 text-gray-800";
     }
+  };
+
+  // Add this helper function to determine the item status based on order status
+  const getItemStatus = (orderStatus, itemStatus) => {
+    // If item is already cancelled, keep it cancelled
+    if (itemStatus === "cancelled") return "cancelled";
+
+    // If order is cancelled, all items should be cancelled
+    if (orderStatus === "cancelled") return "cancelled";
+
+    // For other order statuses, items should match the order status
+    // unless the item status is already at a more advanced state
+    const statusHierarchy = ["pending", "confirmed", "shipped", "delivered"];
+    const orderStatusIndex = statusHierarchy.indexOf(orderStatus);
+    const itemStatusIndex = statusHierarchy.indexOf(itemStatus);
+
+    return orderStatusIndex > itemStatusIndex ? orderStatus : itemStatus;
   };
 
   const formatDate = (dateString) => {
@@ -301,15 +345,11 @@ const OrderDetailsPage = () => {
                             Qty: {item.quantity}
                           </p>
                           <span
-                            className={`inline-block mt-2 text-xs px-2 py-1 rounded-full ${
-                              order.status === "cancelled"
-                                ? "bg-rose-100 text-rose-800"
-                                : getStatusColor(item.status)
-                            }`}
+                            className={`inline-block mt-2 text-xs px-2 py-1 rounded-full ${getStatusColor(
+                              getItemStatus(order.status, item.status)
+                            )}`}
                           >
-                            {order.status === "cancelled"
-                              ? "cancelled"
-                              : item.status}
+                            {getItemStatus(order.status, item.status)}
                           </span>
                         </div>
                       </div>
@@ -317,9 +357,12 @@ const OrderDetailsPage = () => {
                         <p className="text-white font-medium">
                           ₹{(item.product.price * item.quantity).toFixed(2)}
                         </p>
-                        {(item.status === "pending" ||
-                          item.status === "confirmed") &&
-                          order.status !== "cancelled" && ( // Add this check
+                        {(getItemStatus(order.status, item.status) ===
+                          "pending" ||
+                          getItemStatus(order.status, item.status) ===
+                            "confirmed") &&
+                          order.status !== "cancelled" &&
+                          order.status !== "delivered" && (
                             <button
                               onClick={() =>
                                 setModal({
@@ -559,34 +602,35 @@ const OrderDetailsPage = () => {
             </motion.div>
 
             {/* Cancel Order Card */}
-            {(order.status === "pending" || order.status === "confirmed") && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5 }}
-                className="bg-black bg-opacity-80 backdrop-blur-sm rounded-xl shadow-lg overflow-hidden border border-yellow-500"
-              >
-                <div className="p-6">
-                  <h3 className="text-lg font-semibold text-yellow-400 mb-4">
-                    Order Actions
-                  </h3>
-                  <button
-                    onClick={() =>
-                      setModal({
-                        isOpen: true,
-                        title: "Confirm Cancellation",
-                        message:
-                          "Are you sure you want to cancel this entire order?",
-                        onConfirm: handleCancelOrder,
-                      })
-                    }
-                    className="w-full px-4 py-2 border border-rose-500 rounded-lg text-sm font-medium text-rose-400 hover:bg-rose-900 hover:text-white transition-colors shadow-sm hover:shadow-md"
-                  >
-                    Cancel Entire Order
-                  </button>
-                </div>
-              </motion.div>
-            )}
+            {(order.status === "pending" || order.status === "confirmed") &&
+              order.status !== "delivered" && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.5 }}
+                  className="bg-black bg-opacity-80 backdrop-blur-sm rounded-xl shadow-lg overflow-hidden border border-yellow-500"
+                >
+                  <div className="p-6">
+                    <h3 className="text-lg font-semibold text-yellow-400 mb-4">
+                      Order Actions
+                    </h3>
+                    <button
+                      onClick={() =>
+                        setModal({
+                          isOpen: true,
+                          title: "Confirm Cancellation",
+                          message:
+                            "Are you sure you want to cancel this entire order?",
+                          onConfirm: handleCancelOrder,
+                        })
+                      }
+                      className="w-full px-4 py-2 border border-rose-500 rounded-lg text-sm font-medium text-rose-400 hover:bg-rose-900 hover:text-white transition-colors shadow-sm hover:shadow-md"
+                    >
+                      Cancel Entire Order
+                    </button>
+                  </div>
+                </motion.div>
+              )}
           </div>
         </div>
       </div>

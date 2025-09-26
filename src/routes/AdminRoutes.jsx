@@ -12,18 +12,17 @@ import { OrderManagement } from "../components/admin/OrderManagement";
 import UserManagement from "../components/admin/User-Management";
 import { Settings } from "../components/admin/settings";
 import CategoryManagement from "../components/admin/CategoryManagement";
-
-import RequireAdminAuth from "./protectedRoutes/AdminProtectedRoute";
-
-
-
+import { AdminProtectedRoute, PublicAdminProtectedRoute } from "./protectedRoutes/ProtectedRoute";
 
 
 const AdminRoutes = () => {
   return (
     
     <Routes>
+      <Route element={<PublicAdminProtectedRoute />}>
       <Route path="/admin" element={<AdminLogin />} />
+      </Route>
+      <Route element={<AdminProtectedRoute />}>
         <Route path="/admin/home" element={<AdminDashboard />}>
           <Route index element={<DashboardOverview />} />
           <Route path="dashboard" element={<DashboardOverview />} />
@@ -35,7 +34,7 @@ const AdminRoutes = () => {
                   {/* <Route path="*" element={<AdminNotFound/>} /> */}
 
         </Route>
-     
+     </Route>
     </Routes>
   );
 };

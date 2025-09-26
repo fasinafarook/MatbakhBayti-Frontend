@@ -63,7 +63,7 @@ function ProductFormModal({
         description: product.description || "",
         category: product.category?._id || "",
         preparationTime: product.preparationTime || "",
-        type:product.type || "",
+        type: product.type || "",
         image: null,
       });
       setImagePreview(product.image);
@@ -307,21 +307,23 @@ function ProductFormModal({
                 )}
               </div>
               <div className="mb-4">
-  <label className="block text-sm font-medium text-gray-300 mb-1">Type</label>
-  <select
-    name="type"
-    value={form.type}
-    onChange={handleChange}
-    className="w-full p-2 border border-gray-600 bg-gray-700 text-white rounded"
-  >
-    <option value="Veg">Veg</option>
-    <option value="Non-Veg">Non-Veg</option>
-    <option value="Vegan">Vegan</option>
-  </select>
-  {errors.type && (
-    <p className="text-red-500 text-sm mt-1">{errors.type}</p>
-  )}
-</div>
+                <label className="block text-sm font-medium text-gray-300 mb-1">
+                  Type
+                </label>
+                <select
+                  name="type"
+                  value={form.type}
+                  onChange={handleChange}
+                  className="w-full p-2 border border-gray-600 bg-gray-700 text-white rounded"
+                >
+                  <option value="Veg">Veg</option>
+                  <option value="Non-Veg">Non-Veg</option>
+                  <option value="Vegan">Vegan</option>
+                </select>
+                {errors.type && (
+                  <p className="text-red-500 text-sm mt-1">{errors.type}</p>
+                )}
+              </div>
 
               {/* Description */}
               <div>
@@ -442,18 +444,49 @@ export function MenuManagement() {
   };
 
   const handleToggleListing = async (id) => {
-    try {
-      await toggleProductListing(id);
-      fetchData();
-    } catch (error) {
-      Swal.fire({
-        title: "Error!",
-        text: "Failed to toggle product listing",
-        icon: "error",
-        background: "rgba(0, 0, 0, 0.9)",
-        color: "#ffffff",
-        confirmButtonColor: "#f59e0b",
-      });
+    const product = products.find((p) => p._id === id);
+    const action = product.isListed ? "unlist" : "list";
+
+    const result = await Swal.fire({
+      title: `Are you sure?`,
+      html: `You are about to <strong>${action}</strong> this product.`,
+      icon: "warning",
+      background: "rgba(0, 0, 0, 0.9)",
+      color: "#ffffff",
+      showCancelButton: true,
+      confirmButtonColor: "#f59e0b",
+      cancelButtonColor: "#d33",
+      confirmButtonText: `Yes, ${action} it!`,
+      cancelButtonText: "Cancel",
+      customClass: {
+        popup: "small-swal-popup",
+      },
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await toggleProductListing(id);
+        fetchData();
+        Swal.fire({
+          title: `${action === "list" ? "Listed!" : "Unlisted!"}`,
+          text: `Product has been ${action}ed.`,
+          icon: "success",
+          background: "rgba(0, 0, 0, 0.9)",
+          color: "#ffffff",
+          confirmButtonColor: "#f59e0b",
+          timer: 1500,
+          showConfirmButton: false,
+        });
+      } catch (error) {
+        Swal.fire({
+          title: "Error!",
+          text: "Failed to toggle product listing",
+          icon: "error",
+          background: "rgba(0, 0, 0, 0.9)",
+          color: "#ffffff",
+          confirmButtonColor: "#f59e0b",
+        });
+      }
     }
   };
 
@@ -486,7 +519,10 @@ export function MenuManagement() {
 
         <div className="relative z-10 max-w-7xl mx-auto">
           {/* Unique Header Section */}
-          <div className="backdrop-blur-2xl bg-gradient-to-r from-white/15 via-white/10 to-white/15 rounded-3xl border border-white/30 shadow-2xl p-6 sm:p-8 mb-8 relative overflow-hidden">
+<div className="backdrop-blur-2xl bg-black/60 rounded-3xl 
+                border border-yellow-500/50 
+                shadow-[0_0_20px_rgba(255,215,0,0.25)] 
+                p-6 sm:p-8 mb-8 relative overflow-hidden">
             {/* Header background pattern */}
             <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/5 via-transparent to-orange-500/5"></div>
             <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-yellow-400/10 to-transparent rounded-full blur-2xl"></div>
@@ -580,7 +616,9 @@ export function MenuManagement() {
           </div>
 
           {/* Enhanced Controls Section */}
-          <div className="backdrop-blur-2xl bg-gradient-to-r from-white/15 via-white/10 to-white/15 rounded-3xl border border-white/30 shadow-2xl p-6 mb-8 relative overflow-hidden">
+<div className="backdrop-blur-2xl bg-black/60 rounded-3xl 
+                border border-yellow-500/40 shadow-[0_0_25px_rgba(255,215,0,0.3)] 
+                p-6 mb-8 relative overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/3 via-transparent to-orange-500/3"></div>
 
             <div className="relative z-10">
@@ -623,7 +661,7 @@ export function MenuManagement() {
               </div>
 
               {/* Enhanced Category Filters */}
-              <div className="flex gap-2 flex-wrap mt-4">
+              <div className="flex gap-2 flex-wrap mt-4 ">
                 <button
                   onClick={() => setSelectedCategory("All")}
                   className={`px-4 py-2 rounded-xl font-medium transition-all duration-300 hover:scale-105 ${
@@ -651,8 +689,10 @@ export function MenuManagement() {
             </div>
           </div>
 
-          {/* Enhanced Products Section */}
-          <div className="backdrop-blur-2xl bg-gradient-to-br from-white/15 via-white/10 to-white/15 rounded-3xl border border-white/30 shadow-2xl overflow-hidden">
+          {/* Products Section */}
+<div className="backdrop-blur-2xl bg-black/60 rounded-3xl 
+                border border-yellow-500/40 shadow-[0_0_25px_rgba(255,215,0,0.3)] 
+                overflow-hidden">
             {isLoading ? (
               <div className="flex items-center justify-center py-20">
                 <div className="flex items-center gap-3">
@@ -681,82 +721,96 @@ export function MenuManagement() {
                     {filteredItems.map((item) => (
                       <div
                         key={item._id}
-                        className="backdrop-blur-md bg-gradient-to-br from-white/10 via-white/5 to-white/10 rounded-2xl border border-white/20 overflow-hidden hover:bg-white/15 transition-all duration-500 group hover:scale-105 hover:rotate-1 hover:shadow-2xl"
+                        className="backdrop-blur-xl bg-black/60 rounded-2xl 
+             border border-yellow-500/40 overflow-hidden 
+             shadow-lg hover:shadow-[0_0_25px_rgba(255,215,0,0.4)] 
+             transition-all duration-500 group hover:scale-105 hover:rotate-1"
                       >
-                        <div className="relative h-40 sm:h-48 overflow-hidden">
+                        {/* Image Section */}
+                        <div className="relative h-44 sm:h-52 overflow-hidden">
                           <img
                             src={
                               item.image ||
                               "/placeholder.svg?height=200&width=300&query=delicious food item"
                             }
                             alt={item.name}
-                            className="w-full h-full object-cover group-hover:scale-125 transition-transform duration-700"
+                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                           />
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
 
                           {/* Status Badge */}
                           <div className="absolute top-3 right-3">
-                            <div
-                              className={`px-2 py-1 rounded-full text-xs font-medium backdrop-blur-sm border shadow-lg ${
-                                item.isListed
-                                  ? "bg-green-500/30 text-green-300 border-green-500/40"
-                                  : "bg-red-500/30 text-red-300 border-red-500/40"
-                              }`}
+                            <span
+                              className={`px-2 py-1 rounded-full text-xs font-medium backdrop-blur-sm border 
+        ${
+          item.isListed
+            ? "bg-green-600/20 text-green-300 border-green-400/40"
+            : "bg-red-600/20 text-red-300 border-red-400/40"
+        }`}
                             >
                               {item.isListed ? "Listed" : "Unlisted"}
-                            </div>
+                            </span>
                           </div>
 
                           {/* Star Badge */}
                           <div className="absolute top-3 left-3">
-                            <div className="w-8 h-8 bg-gradient-to-br from-yellow-400/30 to-orange-500/30 rounded-xl flex items-center justify-center backdrop-blur-sm border border-white/30 shadow-lg">
+                            <div
+                              className="w-8 h-8 bg-yellow-500/20 rounded-xl flex items-center justify-center 
+                      border border-yellow-400/50 shadow-md"
+                            >
                               <FiStar className="text-yellow-400 text-sm" />
                             </div>
                           </div>
 
                           {/* Heart Badge */}
                           <div className="absolute bottom-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                            <div className="w-8 h-8 bg-gradient-to-br from-red-400/30 to-pink-500/30 rounded-xl flex items-center justify-center backdrop-blur-sm border border-white/30 shadow-lg">
+                            <div
+                              className="w-8 h-8 bg-red-500/20 rounded-xl flex items-center justify-center 
+                      border border-red-400/50 shadow-md"
+                            >
                               <FiHeart className="text-red-400 text-sm" />
                             </div>
                           </div>
                         </div>
 
+                        {/* Content Section */}
                         <div className="p-4 sm:p-5">
                           <div className="flex justify-between items-start mb-2">
-                            <h3 className="text-white font-semibold text-base sm:text-lg truncate pr-2 group-hover:text-yellow-300 transition-colors duration-300">
+                            <h3
+                              className="text-white font-semibold text-base sm:text-lg truncate pr-2 
+                     group-hover:text-yellow-300 transition-colors duration-300"
+                            >
                               {item.name}
                             </h3>
                             <span
-  className={`text-xs px-2 py-1 rounded-full font-medium ${
-    item.type === "Veg"
-      ? "bg-green-800 text-green-300"
-      : item.type === "Non-Veg"
-      ? "bg-red-800 text-red-300"
-      : "bg-yellow-800 text-yellow-300"
-  }`}
->
-  {item.type}
-</span>
-
+                              className={`text-xs px-2 py-1 rounded-full font-medium border 
+        ${
+          item.type === "Veg"
+            ? "bg-green-900/60 text-green-300 border-green-500/40"
+            : item.type === "Non-Veg"
+            ? "bg-red-900/60 text-red-300 border-red-500/40"
+            : "bg-yellow-900/60 text-yellow-300 border-yellow-500/40"
+        }`}
+                            >
+                              {item.type}
+                            </span>
                           </div>
-                          <p className="text-gray-400 text-sm mb-3 truncate group-hover:text-gray-300 transition-colors duration-300">
+                          <p className="text-gray-400 text-sm mb-3 truncate group-hover:text-gray-200 transition-colors duration-300">
                             {item.category?.name}
                           </p>
                           <div className="flex items-center justify-between mb-4">
                             <span className="text-yellow-400 font-bold text-lg sm:text-xl group-hover:text-yellow-300 transition-colors duration-300">
                               ₹{item.price}
                             </span>
-                            <div className="flex items-center gap-1 text-gray-400 group-hover:text-gray-300 transition-colors duration-300">
-                              <p className="text-yellow-200 mt-1 flex items-center gap-1">
-                                <Clock3 className="w-3 h-3 text-yellow-300" />
-                                <span className="font-medium">
-                                  {item.preparationTime || "N/A"}
-                                </span>
-                              </p>
+                            <div className="flex items-center gap-1 text-gray-400 group-hover:text-gray-200 transition-colors duration-300">
+                              <Clock3 className="w-3 h-3 text-yellow-300" />
+                              <span className="font-medium">
+                                {item.preparationTime || "N/A"}
+                              </span>
                             </div>
                           </div>
 
+                          {/* Action Buttons */}
                           <div className="flex gap-2">
                             <button
                               onClick={() =>
@@ -766,12 +820,15 @@ export function MenuManagement() {
                                   imageUrl: item.image,
                                   imageWidth: 300,
                                   imageHeight: 200,
-                                  background: "rgba(0, 0, 0, 0.9)",
-                                  color: "#ffffff",
-                                  confirmButtonColor: "#f59e0b",
+                                  background: "rgba(10, 10, 10, 0.95)",
+                                  color: "#fff",
+                                  confirmButtonColor: "#facc15",
                                 })
                               }
-                              className="flex-1 py-2 px-2 backdrop-blur-md bg-blue-500/20 text-blue-400 border border-blue-500/30 rounded-xl hover:bg-blue-500/30 transition-all duration-200 flex items-center justify-center gap-1 hover:scale-105"
+                              className="flex-1 py-2 px-2 bg-black/40 text-yellow-300 border border-yellow-500/40 
+                   rounded-xl hover:bg-black/60 transition-all duration-300 
+                   flex items-center justify-center gap-1 hover:scale-105 
+                   hover:shadow-[0_0_10px_rgba(255,215,0,0.5)]"
                             >
                               <FiEye size={14} />
                               <span className="text-xs sm:text-sm">View</span>
@@ -781,18 +838,22 @@ export function MenuManagement() {
                                 setSelectedProduct(item);
                                 setShowEditModal(true);
                               }}
-                              className="flex-1 py-2 px-2 backdrop-blur-md bg-yellow-500/20 text-yellow-400 border border-yellow-500/30 rounded-xl hover:bg-yellow-500/30 transition-all duration-200 flex items-center justify-center gap-1 hover:scale-105"
+                              className="flex-1 py-2 px-2 bg-black/40 text-yellow-400 border border-yellow-500/40 
+                   rounded-xl hover:bg-black/60 transition-all duration-300 
+                   flex items-center justify-center gap-1 hover:scale-105 
+                   hover:shadow-[0_0_10px_rgba(255,215,0,0.5)]"
                             >
                               <FiEdit3 size={14} />
                               <span className="text-xs sm:text-sm">Edit</span>
                             </button>
                             <button
                               onClick={() => handleToggleListing(item._id)}
-                              className={`p-2 backdrop-blur-md border rounded-xl transition-all duration-200 hover:scale-105 ${
-                                item.isListed
-                                  ? "bg-red-500/20 text-red-400 border-red-500/30 hover:bg-red-500/30"
-                                  : "bg-green-500/20 text-green-400 border-green-500/30 hover:bg-green-500/30"
-                              }`}
+                              className={`p-2 border rounded-xl transition-all duration-300 hover:scale-110 
+          ${
+            item.isListed
+              ? "bg-black/40 text-red-400 border-red-500/40 hover:shadow-[0_0_10px_rgba(239,68,68,0.6)]"
+              : "bg-black/40 text-green-400 border-green-500/40 hover:shadow-[0_0_10px_rgba(34,197,94,0.6)]"
+          }`}
                             >
                               {item.isListed ? (
                                 <FiToggleRight size={16} />
@@ -922,4 +983,4 @@ export function MenuManagement() {
       </div>
     </div>
   );
-} 
+}

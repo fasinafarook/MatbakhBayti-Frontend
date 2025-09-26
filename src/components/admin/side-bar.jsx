@@ -8,6 +8,7 @@ import {
   Settings as SettingsIcon,
   ChefHat,
   X,
+  Pizza,
 } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import clsx from "clsx";
@@ -33,7 +34,7 @@ export function Sidebar({ isOpen = true, onClose = () => {} }) {
   const menuItems = [
     { path: "/admin/home/dashboard", label: "Dashboard", icon: LayoutDashboard },
     { path: "/admin/home/category", label: "Category Management", icon: UtensilsCrossed },
-    { path: "/admin/home/menu", label: "Menu Management", icon: UtensilsCrossed },
+    { path: "/admin/home/menu", label: "Menu Management", icon: Pizza },
     { path: "/admin/home/orders", label: "Orders", icon: ShoppingCart },
     { path: "/admin/home/users", label: "Users", icon: Users },
     { path: "/admin/home/settings", label: "Settings", icon: SettingsIcon },
