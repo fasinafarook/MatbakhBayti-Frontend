@@ -211,10 +211,7 @@ const OrdersPage = () => {
   return (
     <div
       className="relative min-h-screen p-4 md:p-8 bg-cover bg-center bg-no-repeat"
-      style={{
-        backgroundImage:
-          'url("https://png.pngtree.com/thumb_back/fh260/background/20230705/pngtree-3d-render-of-a-food-delivery-application-image_3792450.jpg")',
-      }}
+      
     >
       <div className="absolute inset-0 bg-black bg-opacity-50"></div>
       <div className="relative z-10 max-w-6xl mx-auto">
@@ -226,9 +223,9 @@ const OrdersPage = () => {
         </p>
 
         {orders.length === 0 ? (
-          <div className="glass-card text-center py-12">
+          <div className="glass-card text-center py-12 ">
             <svg
-              className="mx-auto h-12 w-12 text-white text-opacity-70"
+              className="mx-auto h-12 w-12 text-white text-opacity-70 "
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -257,11 +254,11 @@ const OrdersPage = () => {
           </div>
         ) : (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 ">
               {currentOrders.map((order) => (
                 <div
                   key={order._id}
-                  className="glass-card hover:bg-white hover:bg-opacity-10 transition transform hover:-translate-y-1"
+                  className="glass-card hover:bg-white hover:bg-opacity-10 transition transform hover:-translate-y-1 "
                 >
                   <div className="p-5">
                     {/* Order Header */}
@@ -286,7 +283,7 @@ const OrdersPage = () => {
 
                     {/* Order Summary */}
                     <div className="mb-4">
-                      <div className="flex items-center text-white text-opacity-80 mb-2">
+                      <div className="flex items-center text-white text-opacity-80 mb-2 ">
                         <svg
                           className="w-4 h-4 mr-2 text-yellow-400"
                           fill="none"
@@ -306,7 +303,7 @@ const OrdersPage = () => {
                         )}{" "}
                         items
                       </div>
-                      <div className="flex items-center text-white text-opacity-80 mb-2">
+                      <div className="flex items-center text-white text-opacity-80 mb-2 ">
                         <svg
                           className="w-4 h-4 mr-2 text-yellow-400"
                           fill="none"

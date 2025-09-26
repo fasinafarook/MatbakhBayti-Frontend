@@ -2,6 +2,7 @@
 import { motion } from "framer-motion";
 import { Play, Calendar, ChefHat, Star, ArrowRight } from "lucide-react";
 import YouTubeButton from "../button/YoutubeButton";
+import { Link } from "react-router-dom";
 
 const HeroSection = () => {
   return (
@@ -162,11 +163,14 @@ const HeroSection = () => {
                   }}
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-yellow-300 to-yellow-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  <div className="relative flex items-center space-x-2">
-                    <Calendar className="w-5 h-5" />
-                    <span>Book a Table</span>
-                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                  </div>
+                 <Link
+      to="/menu"
+      className="relative flex items-center space-x-2 group cursor-pointer"
+    >
+      <Calendar className="w-5 h-5" />
+      <span>Book a Table</span>
+      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+    </Link>
                   {/* 3D Shadow */}
                   <div className="absolute inset-0 bg-yellow-600 rounded-2xl -z-10 transform translate-y-2 group-hover:translate-y-1 transition-transform duration-300"></div>
                 </motion.button>

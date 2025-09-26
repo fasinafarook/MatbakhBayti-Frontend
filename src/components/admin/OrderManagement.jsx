@@ -1,9 +1,4 @@
-
-"use client"
-
-import React from "react"
-
-import { useState, useEffect, useRef } from "react"
+import React, { useState, useEffect, useRef } from "react";
 import {
   Search,
   Eye,
@@ -21,9 +16,8 @@ import {
   ChevronDown,
   ChevronUp,
   X,
-} from "lucide-react"
-
-import { getAllOrders, updateOrderStatus } from "../../api/admin/adminApi"
+} from "lucide-react";
+import { getAllOrders, updateOrderStatus } from "../../api/admin/adminApi";
 
 const CustomButton = ({
   children,
@@ -35,18 +29,19 @@ const CustomButton = ({
   ...props
 }) => {
   const baseClasses =
-    "inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 disabled:pointer-events-none disabled:opacity-50"
+    "inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 disabled:pointer-events-none disabled:opacity-50";
 
   const variants = {
     default: "bg-amber-500 text-black hover:bg-amber-600",
-    outline: "border border-slate-600 text-slate-300 hover:bg-slate-800 hover:text-white",
+    outline:
+      "border border-slate-600 text-slate-300 hover:bg-slate-800 hover:text-white",
     ghost: "hover:bg-slate-700 hover:text-white text-slate-300",
-  }
+  };
 
   const sizes = {
     default: "h-10 px-4 py-2",
     sm: "h-9 rounded-md px-3",
-  }
+  };
 
   return (
     <button
@@ -57,8 +52,8 @@ const CustomButton = ({
     >
       {children}
     </button>
-  )
-}
+  );
+};
 
 const CustomInput = ({ className = "", ...props }) => {
   return (
@@ -66,8 +61,8 @@ const CustomInput = ({ className = "", ...props }) => {
       className={`flex h-10 w-full rounded-md border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-white placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
       {...props}
     />
-  )
-}
+  );
+};
 
 const CustomBadge = ({ children, variant = "default", className = "" }) => {
   const variants = {
@@ -75,7 +70,7 @@ const CustomBadge = ({ children, variant = "default", className = "" }) => {
     outline: "border border-amber-500/30 bg-amber-500/20 text-amber-400",
     secondary: "bg-slate-600 text-white",
     destructive: "bg-red-600 text-white",
-  }
+  };
 
   return (
     <span
@@ -83,43 +78,55 @@ const CustomBadge = ({ children, variant = "default", className = "" }) => {
     >
       {children}
     </span>
-  )
-}
+  );
+};
 
 const CustomCard = ({ children, className = "" }) => {
   return (
-    <div className={`rounded-lg border border-slate-700 bg-slate-800 text-white shadow-sm ${className}`}>
+    <div
+      className={`rounded-lg border border-slate-700 bg-slate-800 text-white shadow-sm ${className}`}
+    >
       {children}
     </div>
-  )
-}
+  );
+};
 
 const CustomCardHeader = ({ children, className = "" }) => {
-  return <div className={`flex flex-col space-y-1.5 p-6 ${className}`}>{children}</div>
-}
+  return (
+    <div className={`flex flex-col space-y-1.5 p-6 ${className}`}>
+      {children}
+    </div>
+  );
+};
 
 const CustomCardTitle = ({ children, className = "" }) => {
-  return <h3 className={`text-2xl font-semibold leading-none tracking-tight text-white ${className}`}>{children}</h3>
-}
+  return (
+    <h3
+      className={`text-2xl font-semibold leading-none tracking-tight text-white ${className}`}
+    >
+      {children}
+    </h3>
+  );
+};
 
 const CustomCardContent = ({ children, className = "" }) => {
-  return <div className={`p-6 pt-0 ${className}`}>{children}</div>
-}
+  return <div className={`p-6 pt-0 ${className}`}>{children}</div>;
+};
 
 const CustomSelect = ({ value, onValueChange, children, className = "" }) => {
-  const [isOpen, setIsOpen] = useState(false)
-  const selectRef = useRef(null)
+  const [isOpen, setIsOpen] = useState(false);
+  const selectRef = useRef(null);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (selectRef.current && !selectRef.current.contains(event.target)) {
-        setIsOpen(false)
+        setIsOpen(false);
       }
-    }
+    };
 
-    document.addEventListener("mousedown", handleClickOutside)
-    return () => document.removeEventListener("mousedown", handleClickOutside)
-  }, [])
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   return (
     <div className={`relative ${className}`} ref={selectRef}>
@@ -135,16 +142,16 @@ const CustomSelect = ({ value, onValueChange, children, className = "" }) => {
           {children.map((child) =>
             React.cloneElement(child, {
               onClick: () => {
-                onValueChange(child.props.value)
-                setIsOpen(false)
+                onValueChange(child.props.value);
+                setIsOpen(false);
               },
-            }),
+            })
           )}
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
 const CustomSelectItem = ({ value, children, onClick, className = "" }) => {
   return (
@@ -154,23 +161,23 @@ const CustomSelectItem = ({ value, children, onClick, className = "" }) => {
     >
       {children}
     </div>
-  )
-}
+  );
+};
 
 const CustomDropdownMenu = ({ children, trigger }) => {
-  const [isOpen, setIsOpen] = useState(false)
-  const dropdownRef = useRef(null)
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef(null);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsOpen(false)
+        setIsOpen(false);
       }
-    }
+    };
 
-    document.addEventListener("mousedown", handleClickOutside)
-    return () => document.removeEventListener("mousedown", handleClickOutside)
-  }, [])
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   return (
     <div className="relative" ref={dropdownRef}>
@@ -180,16 +187,16 @@ const CustomDropdownMenu = ({ children, trigger }) => {
           {React.Children.map(children, (child) =>
             React.cloneElement(child, {
               onClick: () => {
-                child.props.onClick?.()
-                setIsOpen(false)
+                child.props.onClick?.();
+                setIsOpen(false);
               },
-            }),
+            })
           )}
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
 const CustomDropdownMenuItem = ({ children, onClick, className = "" }) => {
   return (
@@ -199,11 +206,11 @@ const CustomDropdownMenuItem = ({ children, onClick, className = "" }) => {
     >
       {children}
     </div>
-  )
-}
+  );
+};
 
 const CustomModal = ({ isOpen, onClose, children }) => {
-  if (!isOpen) return null
+  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
@@ -212,8 +219,8 @@ const CustomModal = ({ isOpen, onClose, children }) => {
         {children}
       </div>
     </div>
-  )
-}
+  );
+};
 
 const CustomModalHeader = ({ children, onClose }) => {
   return (
@@ -226,83 +233,91 @@ const CustomModalHeader = ({ children, onClose }) => {
         <X className="h-4 w-4 text-white" />
       </button>
     </div>
-  )
-}
+  );
+};
 
 const CustomModalTitle = ({ children }) => {
-  return <h2 className="text-lg font-semibold text-white">{children}</h2>
-}
+  return <h2 className="text-lg font-semibold text-white">{children}</h2>;
+};
 
 const CustomModalDescription = ({ children }) => {
-  return <p className="text-sm text-slate-400">{children}</p>
-}
+  return <p className="text-sm text-slate-400">{children}</p>;
+};
 
 export function OrderManagement() {
-  const [searchTerm, setSearchTerm] = useState("")
-  const [statusFilter, setStatusFilter] = useState("all")
-  const [orders, setOrders] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
-  const [selectedOrder, setSelectedOrder] = useState(null)
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [expandedItems, setExpandedItems] = useState(new Set())
-  const [updatingStatus, setUpdatingStatus] = useState({})
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [expandedItems, setExpandedItems] = useState(new Set());
+  const [updatingStatus, setUpdatingStatus] = useState({});
 
-  const possibleStatuses = ["pending", "confirmed", "shipped", "delivered", "cancelled"]
-  const statusOptions = ["all", ...possibleStatuses]
- const handleViewOrder = (order) => {
+  const possibleStatuses = [
+    "pending",
+    "confirmed",
+    "shipped",
+    "delivered",
+    "cancelled",
+  ];
+  const statusOptions = ["all", ...possibleStatuses];
+
+  const handleViewOrder = (order) => {
     setSelectedOrder(order);
     setIsModalOpen(true);
   };
+
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const data = await getAllOrders()
-        setOrders(data)
+        const data = await getAllOrders();
+        setOrders(data);
       } catch (err) {
-        setError("Failed to fetch orders")
-        console.error(err)
+        setError("Failed to fetch orders");
+        console.error(err);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    fetchOrders()
-  }, [])
+    fetchOrders();
+  }, []);
 
   const getStatusIcon = (status) => {
     switch (status) {
       case "pending":
-        return <Clock className="h-4 w-4" />
+        return <Clock className="h-4 w-4" />;
       case "confirmed":
-        return <CheckCircle className="h-4 w-4" />
+        return <CheckCircle className="h-4 w-4" />;
       case "shipped":
-        return <Truck className="h-4 w-4" />
+        return <Truck className="h-4 w-4" />;
       case "delivered":
-        return <CheckCircle className="h-4 w-4" />
+        return <CheckCircle className="h-4 w-4" />;
       case "cancelled":
-        return <XCircle className="h-4 w-4" />
+        return <XCircle className="h-4 w-4" />;
       default:
-        return <Clock className="h-4 w-4" />
+        return <Clock className="h-4 w-4" />;
     }
-  }
+  };
 
   const getStatusVariant = (status) => {
     switch (status) {
       case "pending":
-        return "secondary"
+        return "secondary";
       case "confirmed":
-        return "default"
+        return "default";
       case "shipped":
-        return "default"
+        return "default";
       case "delivered":
-        return "default"
+        return "default";
       case "cancelled":
-        return "destructive"
+        return "destructive";
       default:
-        return "secondary"
+        return "secondary";
     }
-  }
+  };
 
   // Validate status transitions
   const isValidStatusChange = (currentStatus, newStatus) => {
@@ -311,83 +326,126 @@ export function OrderManagement() {
       confirmed: ["shipped", "cancelled"],
       shipped: ["delivered", "cancelled"],
       delivered: [],
-      cancelled: []
+      cancelled: [],
     };
-    
+
     return validTransitions[currentStatus]?.includes(newStatus) || false;
   };
 
   // Get allowed next statuses for current status
   const getAllowedStatuses = (currentStatus) => {
-    return possibleStatuses.filter(status => 
+    return possibleStatuses.filter((status) =>
       isValidStatusChange(currentStatus, status)
     );
   };
 
   const handleStatusChange = async (orderId, newStatus) => {
     try {
-      const order = orders.find(o => o._id === orderId);
+      const order = orders.find((o) => o._id === orderId);
       if (!order) return;
-      
+
       // Validate transition
       if (!isValidStatusChange(order.status, newStatus)) {
-        console.error(`Invalid status transition from ${order.status} to ${newStatus}`);
+        console.error(
+          `Invalid status transition from ${order.status} to ${newStatus}`
+        );
         return;
       }
-      
-      setUpdatingStatus(prev => ({ ...prev, [orderId]: true }));
-      
+
+      setUpdatingStatus((prev) => ({ ...prev, [orderId]: true }));
+
       // Update backend
       await updateOrderStatus(orderId, newStatus);
-      
-      // Update local state
-      setOrders(orders.map(order => 
-        order._id === orderId ? { ...order, status: newStatus } : order
-      ));
-      
-      // Update selected order if modal is open
-      setSelectedOrder(prev => 
-        prev && prev._id === orderId ? { ...prev, status: newStatus } : prev
+
+      // Update local state with proper item status handling
+      setOrders(
+        orders.map((order) => {
+          if (order._id === orderId) {
+            let updatedItems = order.items;
+
+            // If order is cancelled or delivered, update all non-cancelled items
+            if (newStatus === "cancelled" || newStatus === "delivered") {
+              updatedItems = order.items.map((item) => ({
+                ...item,
+                status: item.status === "cancelled" ? "cancelled" : newStatus,
+              }));
+            }
+
+            return { ...order, status: newStatus, items: updatedItems };
+          }
+          return order;
+        })
       );
+
+      // Update selected order if modal is open
+      setSelectedOrder((prev) => {
+        if (prev && prev._id === orderId) {
+          let updatedItems = prev.items;
+
+          if (newStatus === "cancelled" || newStatus === "delivered") {
+            updatedItems = prev.items.map((item) => ({
+              ...item,
+              status: item.status === "cancelled" ? "cancelled" : newStatus,
+            }));
+          }
+
+          return { ...prev, status: newStatus, items: updatedItems };
+        }
+        return prev;
+      });
     } catch (error) {
       console.error("Failed to update order status:", error);
     } finally {
-      setUpdatingStatus(prev => ({ ...prev, [orderId]: false }));
+      setUpdatingStatus((prev) => ({ ...prev, [orderId]: false }));
     }
   };
 
   const filteredOrders = orders.filter((order) => {
     const matchesSearch =
-      order.shippingAddress.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      order._id.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesStatus = statusFilter === "all" || order.status === statusFilter
-    return matchesSearch && matchesStatus
-  })
+      order.shippingAddress.fullName
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
+      order._id.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesStatus =
+      statusFilter === "all" || order.status === statusFilter;
+    return matchesSearch && matchesStatus;
+  });
 
   const toggleItemExpansion = (orderId) => {
-    const newExpanded = new Set(expandedItems)
+    const newExpanded = new Set(expandedItems);
     if (newExpanded.has(orderId)) {
-      newExpanded.delete(orderId)
+      newExpanded.delete(orderId);
     } else {
-      newExpanded.add(orderId)
+      newExpanded.add(orderId);
     }
-    setExpandedItems(newExpanded)
-  }
+    setExpandedItems(newExpanded);
+  };
 
   const renderOrderItems = (order) => {
-    const totalItems = order.items.reduce((sum, item) => sum + item.quantity, 0)
-    const isExpanded = expandedItems.has(order._id)
+    const totalItems = order.items.reduce(
+      (sum, item) => sum + item.quantity,
+      0
+    );
+    const isExpanded = expandedItems.has(order._id);
 
     if (order.items.length === 1) {
-      const item = order.items[0]
+      const item = order.items[0];
       return (
         <div className="flex items-center gap-2">
-          <CustomBadge variant="outline" className="bg-amber-500/20 text-amber-400 border-amber-500/30 font-medium">
+          <CustomBadge
+            variant="outline"
+            className="bg-amber-500/20 text-amber-400 border-amber-500/30 font-medium"
+          >
             {item.quantity}x
           </CustomBadge>
-          <span className="text-sm text-white font-medium">{item.product?.name || "Product"}</span>
+          <span className="text-sm text-white font-medium">
+            {item.product?.name || "Product"}
+          </span>
+          {item.status === "cancelled" && (
+            <span className="text-xs text-red-400">(Cancelled)</span>
+          )}
         </div>
-      )
+      );
     }
 
     return (
@@ -397,10 +455,15 @@ export function OrderManagement() {
             onClick={() => toggleItemExpansion(order._id)}
             className="flex items-center gap-2 hover:bg-slate-700/50 p-2 rounded-md transition-colors w-full text-left"
           >
-            <CustomBadge variant="outline" className="bg-amber-500/20 text-amber-400 border-amber-500/30 font-medium">
+            <CustomBadge
+              variant="outline"
+              className="bg-amber-500/20 text-amber-400 border-amber-500/30 font-medium"
+            >
               {totalItems} items
             </CustomBadge>
-            <span className="text-sm text-slate-300 flex-1">{order.items.length} different products</span>
+            <span className="text-sm text-slate-300 flex-1">
+              {order.items.length} different products
+            </span>
             {isExpanded ? (
               <ChevronUp className="h-4 w-4 text-amber-400" />
             ) : (
@@ -420,8 +483,17 @@ export function OrderManagement() {
                         <Package className="h-4 w-4 text-amber-400" />
                       </div>
                       <div>
-                        <p className="font-medium text-white text-sm">{item.product?.name || "Product"}</p>
-                        <p className="text-xs text-slate-400">Quantity: {item.quantity}</p>
+                        <p className="font-medium text-white text-sm">
+                          {item.product?.name || "Product"}
+                        </p>
+                        <p className="text-xs text-slate-400">
+                          Quantity: {item.quantity}
+                        </p>
+                        {item.status === "cancelled" && (
+                          <span className="text-xs text-red-400">
+                            Cancelled
+                          </span>
+                        )}
                       </div>
                     </div>
                     <CustomBadge
@@ -437,26 +509,32 @@ export function OrderManagement() {
           )}
         </div>
       </div>
-    )
-  }
+    );
+  };
 
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen bg-slate-900 min-h-screen text-white">
         <Loader2 className="animate-spin h-12 w-12" />
       </div>
-    )
+    );
   }
 
   if (error) {
-    return <div className="p-6 text-center text-red-400 bg-slate-900 min-h-screen ">{error}</div>
+    return (
+      <div className="p-6 text-center text-red-400 bg-slate-900 min-h-screen ">
+        {error}
+      </div>
+    );
   }
 
   return (
     <div className="p-6 space-y-6 bg-slate-900 min-h-screen text-white">
       <div>
         <h1 className="text-3xl font-bold text-white">Order Management</h1>
-        <p className="text-slate-400">Track and manage all customer orders in real-time.</p>
+        <p className="text-slate-400">
+          Track and manage all customer orders in real-time.
+        </p>
       </div>
 
       <div className="flex flex-col sm:flex-row gap-4">
@@ -498,32 +576,56 @@ export function OrderManagement() {
               <table className="w-full">
                 <thead>
                   <tr className="border-b border-slate-700">
-                    <th className="text-left py-3 px-4 text-slate-300 font-medium">Order ID</th>
-                    <th className="text-left py-3 px-4 text-slate-300 font-medium">Customer</th>
-                    <th className="text-left py-3 px-4 text-slate-300 font-medium">Items</th>
-                    <th className="text-left py-3 px-4 text-slate-300 font-medium">Total</th>
-                    <th className="text-left py-3 px-4 text-slate-300 font-medium">Status</th>
-                    <th className="text-left py-3 px-4 text-slate-300 font-medium">Date</th>
-                    <th className="text-right py-3 px-4 text-slate-300 font-medium">Actions</th>
+                    <th className="text-left py-3 px-4 text-slate-300 font-medium">
+                      Order ID
+                    </th>
+                    <th className="text-left py-3 px-4 text-slate-300 font-medium">
+                      Customer
+                    </th>
+                    <th className="text-left py-3 px-4 text-slate-300 font-medium">
+                      Items
+                    </th>
+                    <th className="text-left py-3 px-4 text-slate-300 font-medium">
+                      Total
+                    </th>
+                    <th className="text-left py-3 px-4 text-slate-300 font-medium">
+                      Status
+                    </th>
+                    <th className="text-left py-3 px-4 text-slate-300 font-medium">
+                      Date
+                    </th>
+                    <th className="text-right py-3 px-4 text-slate-300 font-medium">
+                      Actions
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
                   {filteredOrders.map((order) => {
-                    const orderDate = new Date(order.createdAt)
+                    const orderDate = new Date(order.createdAt);
 
                     return (
-                      <tr key={order._id} className="border-b border-slate-700 hover:bg-slate-700/50">
-                        <td className="py-4 px-4 font-mono text-sm text-slate-300">{order._id.slice(-8)}</td>
+                      <tr
+                        key={order._id}
+                        className="border-b border-slate-700 hover:bg-slate-700/50"
+                      >
+                        <td className="py-4 px-4 font-mono text-sm text-slate-300">
+                          {order._id.slice(-8)}
+                        </td>
                         <td className="py-4 px-4">
                           <div>
-                            <div className="font-medium text-white">{order.shippingAddress.fullName}</div>
+                            <div className="font-medium text-white">
+                              {order.shippingAddress.fullName}
+                            </div>
                             <div className="text-sm text-slate-400">
-                              {order.shippingAddress.city}, {order.shippingAddress.state}
+                              {order.shippingAddress.city},{" "}
+                              {order.shippingAddress.state}
                             </div>
                           </div>
                         </td>
                         <td className="py-4 px-4">{renderOrderItems(order)}</td>
-                        <td className="py-4 px-4 font-semibold text-amber-400">${order.totalAmount.toFixed(2)}</td>
+                        <td className="py-4 px-4 font-semibold text-amber-400">
+                          ${order.totalAmount.toFixed(2)}
+                        </td>
                         <td className="py-4 px-4">
                           <CustomBadge
                             variant={getStatusVariant(order.status)}
@@ -531,19 +633,21 @@ export function OrderManagement() {
                               order.status === "confirmed"
                                 ? "bg-amber-500 text-black hover:bg-amber-600"
                                 : order.status === "delivered"
-                                  ? "bg-green-600 text-white"
-                                  : order.status === "shipped"
-                                    ? "bg-blue-600 text-white"
-                                    : order.status === "cancelled"
-                                      ? "bg-red-600 text-white"
-                                      : "bg-slate-600 text-white"
+                                ? "bg-green-600 text-white"
+                                : order.status === "shipped"
+                                ? "bg-blue-600 text-white"
+                                : order.status === "cancelled"
+                                ? "bg-red-600 text-white"
+                                : "bg-slate-600 text-white"
                             }`}
                           >
                             {getStatusIcon(order.status)}
                             <span className="ml-1">{order.status}</span>
                           </CustomBadge>
                         </td>
-                        <td className="py-4 px-4 text-sm text-slate-400">{orderDate.toLocaleDateString()}</td>
+                        <td className="py-4 px-4 text-sm text-slate-400">
+                          {orderDate.toLocaleDateString()}
+                        </td>
                         <td className="py-4 px-4 text-right">
                           <CustomDropdownMenu
                             trigger={
@@ -552,14 +656,16 @@ export function OrderManagement() {
                               </CustomButton>
                             }
                           >
-                            <CustomDropdownMenuItem onClick={() => handleViewOrder(order)}>
+                            <CustomDropdownMenuItem
+                              onClick={() => handleViewOrder(order)}
+                            >
                               <Eye className="h-4 w-4 mr-2" />
                               View Details
                             </CustomDropdownMenuItem>
                           </CustomDropdownMenu>
                         </td>
                       </tr>
-                    )
+                    );
                   })}
                 </tbody>
               </table>
@@ -571,7 +677,9 @@ export function OrderManagement() {
       <CustomModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
         <CustomModalHeader onClose={() => setIsModalOpen(false)}>
           <CustomModalTitle>Order Details</CustomModalTitle>
-          <CustomModalDescription>Complete information for order {selectedOrder?._id}</CustomModalDescription>
+          <CustomModalDescription>
+            Complete information for order {selectedOrder?._id}
+          </CustomModalDescription>
         </CustomModalHeader>
 
         {selectedOrder && (
@@ -584,23 +692,23 @@ export function OrderManagement() {
                     selectedOrder.status === "confirmed"
                       ? "bg-amber-500 text-black"
                       : selectedOrder.status === "delivered"
-                        ? "bg-green-600 text-white"
-                        : selectedOrder.status === "shipped"
-                          ? "bg-blue-600 text-white"
-                          : selectedOrder.status === "cancelled"
-                            ? "bg-red-600 text-white"
-                            : "bg-slate-600 text-white"
+                      ? "bg-green-600 text-white"
+                      : selectedOrder.status === "shipped"
+                      ? "bg-blue-600 text-white"
+                      : selectedOrder.status === "cancelled"
+                      ? "bg-red-600 text-white"
+                      : "bg-slate-600 text-white"
                   }`}
                 >
                   {getStatusIcon(selectedOrder.status)}
                   <span className="ml-1">{selectedOrder.status}</span>
                 </CustomBadge>
               </div>
-              
+
               {getAllowedStatuses(selectedOrder.status).length > 0 ? (
                 <CustomSelect
                   value={selectedOrder.status}
-                  onValueChange={(newStatus) => 
+                  onValueChange={(newStatus) =>
                     handleStatusChange(selectedOrder._id, newStatus)
                   }
                   className="w-[180px]"
@@ -631,11 +739,15 @@ export function OrderManagement() {
                 <CustomCardContent className="space-y-2">
                   <div>
                     <p className="text-sm text-slate-400">Order ID</p>
-                    <p className="font-mono text-sm text-white">{selectedOrder._id}</p>
+                    <p className="font-mono text-sm text-white">
+                      {selectedOrder._id}
+                    </p>
                   </div>
                   <div>
                     <p className="text-sm text-slate-400">Date</p>
-                    <p className="text-sm text-white">{new Date(selectedOrder.createdAt).toLocaleString()}</p>
+                    <p className="text-sm text-white">
+                      {new Date(selectedOrder.createdAt).toLocaleString()}
+                    </p>
                   </div>
                 </CustomCardContent>
               </CustomCard>
@@ -650,7 +762,9 @@ export function OrderManagement() {
                 <CustomCardContent>
                   <div>
                     <p className="text-sm text-slate-400">Total Amount</p>
-                    <p className="text-2xl font-bold text-amber-400">${selectedOrder.totalAmount.toFixed(2)}</p>
+                    <p className="text-2xl font-bold text-amber-400">
+                      ${selectedOrder.totalAmount.toFixed(2)}
+                    </p>
                   </div>
                 </CustomCardContent>
               </CustomCard>
@@ -665,7 +779,9 @@ export function OrderManagement() {
               </CustomCardHeader>
               <CustomCardContent>
                 <div>
-                  <p className="font-medium text-white">{selectedOrder.shippingAddress.fullName}</p>
+                  <p className="font-medium text-white">
+                    {selectedOrder.shippingAddress.fullName}
+                  </p>
                 </div>
               </CustomCardContent>
             </CustomCard>
@@ -681,7 +797,8 @@ export function OrderManagement() {
                 <div className="space-y-1 text-white">
                   <p>{selectedOrder.shippingAddress.street}</p>
                   <p>
-                    {selectedOrder.shippingAddress.city}, {selectedOrder.shippingAddress.state}
+                    {selectedOrder.shippingAddress.city},{" "}
+                    {selectedOrder.shippingAddress.state}
                   </p>
                   <p>{selectedOrder.shippingAddress.postalCode}</p>
                 </div>
@@ -692,7 +809,12 @@ export function OrderManagement() {
               <CustomCardHeader className="pb-3">
                 <CustomCardTitle className="text-sm flex items-center gap-2 text-white">
                   <Package className="h-4 w-4" />
-                  Order Items ({selectedOrder.items.reduce((sum, item) => sum + item.quantity, 0)} total)
+                  Order Items (
+                  {selectedOrder.items.reduce(
+                    (sum, item) => sum + item.quantity,
+                    0
+                  )}{" "}
+                  total)
                 </CustomCardTitle>
               </CustomCardHeader>
               <CustomCardContent>
@@ -707,12 +829,24 @@ export function OrderManagement() {
                           <Package className="h-5 w-5 text-amber-400" />
                         </div>
                         <div>
-                          <p className="font-medium text-white">{item.product?.name || "Product"}</p>
-                          <p className="text-sm text-slate-400">Quantity: {item.quantity}</p>
+                          <p className="font-medium text-white">
+                            {item.product?.name || "Product"}
+                          </p>
+                          <p className="text-sm text-slate-400">
+                            Quantity: {item.quantity}
+                          </p>
+                          {item.status === "cancelled" && (
+                            <span className="text-xs text-red-400">
+                              Cancelled
+                            </span>
+                          )}
                         </div>
                       </div>
                       <div className="text-right">
-                        <CustomBadge variant="outline" className="bg-amber-500/20 text-amber-400 border-amber-500/30">
+                        <CustomBadge
+                          variant="outline"
+                          className="bg-amber-500/20 text-amber-400 border-amber-500/30"
+                        >
                           {item.quantity}x
                         </CustomBadge>
                       </div>
@@ -725,5 +859,5 @@ export function OrderManagement() {
         )}
       </CustomModal>
     </div>
-  )
+  );
 }

@@ -17,7 +17,6 @@ import {
   FiSave,
   FiLayers,
   FiFilter,
-  FiBarChart,
 } from "react-icons/fi"
 import Swal from "sweetalert2"
 
@@ -30,7 +29,9 @@ const CategoryManagement = () => {
   const [editError, setEditError] = useState("")
   const [isLoading, setIsLoading] = useState(true)
   const [showAddForm, setShowAddForm] = useState(false)
-  const [filterStatus, setFilterStatus] = useState("all") // all, listed, unlisted
+  const [filterStatus, setFilterStatus] = useState("all")
+  const [showConfirmModal, setShowConfirmModal] = useState(false)
+  const [categoryToToggle, setCategoryToToggle] = useState(null)
 
   useEffect(() => {
     fetchCategories()
@@ -43,17 +44,34 @@ const CategoryManagement = () => {
       setCategories(data.categories)
     } catch (err) {
       console.error("Error fetching categories:", err.message)
-      Swal.fire({
-        title: "Error!",
-        text: "Failed to fetch categories",
-        icon: "error",
-        background: "rgba(0, 0, 0, 0.9)",
-        color: "#ffffff",
-        confirmButtonColor: "#f59e0b",
-      })
+      showErrorAlert("Failed to fetch categories")
     } finally {
       setIsLoading(false)
     }
+  }
+
+  const showErrorAlert = (message) => {
+    Swal.fire({
+      title: "Error!",
+      text: message,
+      icon: "error",
+      background: "rgba(0, 0, 0, 0.9)",
+      color: "#ffffff",
+      confirmButtonColor: "#f59e0b",
+    })
+  }
+
+  const showSuccessAlert = (message) => {
+    Swal.fire({
+      title: "Success!",
+      text: message,
+      icon: "success",
+      background: "rgba(0, 0, 0, 0.9)",
+      color: "#ffffff",
+      confirmButtonColor: "#f59e0b",
+      timer: 2000,
+      showConfirmButton: false,
+    })
   }
 
   const handleAddCategory = async () => {
@@ -67,16 +85,7 @@ const CategoryManagement = () => {
       setErrors({})
       setShowAddForm(false)
       fetchCategories()
-      Swal.fire({
-        title: "Success!",
-        text: "Category added successfully",
-        icon: "success",
-        background: "rgba(0, 0, 0, 0.9)",
-        color: "#ffffff",
-        confirmButtonColor: "#f59e0b",
-        timer: 2000,
-        showConfirmButton: false,
-      })
+      showSuccessAlert("Category added successfully")
     } catch (err) {
       const responseErrors = err?.response?.data?.errors || {}
       setErrors(responseErrors)
@@ -94,18 +103,9 @@ const CategoryManagement = () => {
       setUpdatedName("")
       setEditError("")
       fetchCategories()
-      Swal.fire({
-        title: "Updated!",
-        text: "Category updated successfully",
-        icon: "success",
-        background: "rgba(0, 0, 0, 0.9)",
-        color: "#ffffff",
-        confirmButtonColor: "#f59e0b",
-        timer: 2000,
-        showConfirmButton: false,
-      })
+      showSuccessAlert("Category updated successfully")
     } catch (err) {
-      setEditError("Update failed. Try again.")
+      setEditError("Update failed. Try again(category already exist).")
     }
   }
 
@@ -113,17 +113,18 @@ const CategoryManagement = () => {
     try {
       await toggleCategoryStatus(id)
       fetchCategories()
+      setShowConfirmModal(false)
+      setCategoryToToggle(null)
     } catch (err) {
       console.error("Toggle status failed:", err.message)
-      Swal.fire({
-        title: "Error!",
-        text: "Failed to toggle category status",
-        icon: "error",
-        background: "rgba(0, 0, 0, 0.9)",
-        color: "#ffffff",
-        confirmButtonColor: "#f59e0b",
-      })
+      showErrorAlert("Failed to toggle category status")
     }
+  }
+
+  const confirmToggleStatus = (id) => {
+    const category = categories.find((c) => c._id === id)
+    setCategoryToToggle(id)
+    setShowConfirmModal(true)
   }
 
   const filteredCategories = categories.filter((category) => {
@@ -140,294 +141,231 @@ const CategoryManagement = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-900/20 via-black to-amber-950/30 p-4 sm:p-6 lg:p-8">
-      {/* Floating Background Elements */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-amber-400/10 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-amber-600/8 rounded-full blur-3xl animate-pulse delay-1000"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-amber-300/5 rounded-full blur-2xl animate-pulse delay-500"></div>
-      </div>
+    <div className="min-h-screen bg-black text-amber-100 px-6 py-6">
+      <header className="mb-8">
+        <h1 className="text-3xl font-bold text-amber-400 text-balance">Category Management</h1>
+        <p className="text-amber-200/70 mt-1">Organize and manage your product categories</p>
+      </header>
 
-      <div className="relative z-10 max-w-7xl mx-auto">
-        {/* Header Section */}
-        <div className="backdrop-blur-xl bg-gradient-to-r from-amber-900/20 via-black/40 to-amber-950/20 rounded-3xl border border-amber-500/20 shadow-2xl p-6 sm:p-8 mb-8">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-            <div className="flex items-center gap-4">
-              <div className="w-16 h-16 bg-gradient-to-br from-amber-400/20 to-amber-600/20 rounded-2xl flex items-center justify-center backdrop-blur-sm border border-amber-500/30">
-                <FiLayers className="text-amber-400 text-2xl" />
-              </div>
-              <div>
-                <h1 className="text-3xl font-bold bg-gradient-to-r from-amber-200 to-amber-400 bg-clip-text text-transparent">
-                  Category Management
-                </h1>
-                <p className="text-amber-200/70 mt-1">Organize and manage your menu categories</p>
+      {/* Stats - classic cards with solid backgrounds and subtle borders */}
+      <section className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-6">
+        {[
+          { title: "Total", value: stats.total, icon: FiLayers },
+          { title: "Listed", value: stats.listed, icon: FiEye },
+          { title: "Unlisted", value: stats.unlisted, icon: FiEyeOff },
+          { title: "Filtered", value: filteredCategories.length, icon: FiFilter },
+        ].map((s, idx) => {
+          const Icon = s.icon
+          return (
+            <div key={idx} className="rounded-lg border border-amber-500/20 bg-neutral-950 px-4 py-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="inline-flex h-8 w-8 items-center justify-center rounded-md bg-neutral-900 border border-amber-500/20">
+                    <Icon className="h-4 w-4 text-amber-300" />
+                  </span>
+                  <span className="text-sm text-amber-200/80">{s.title}</span>
+                </div>
+                <span className="text-xl font-semibold text-amber-50">{s.value}</span>
               </div>
             </div>
-            <button
-              onClick={() => setShowAddForm(true)}
-              className="bg-gradient-to-r from-amber-400 to-amber-600 text-black font-bold px-6 py-3 rounded-2xl hover:from-amber-500 hover:to-amber-700 transition-all duration-300 transform hover:scale-105 flex items-center gap-3 shadow-lg"
-            >
-              <FiPlus size={20} />
-              Add Category
-            </button>
-          </div>
-        </div>
+          )
+        })}
+      </section>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+      {/* Toolbar */}
+      <section className="mb-4 flex items-center justify-between gap-2 flex-wrap">
+        <div className="flex items-center gap-2">
           {[
-            {
-              label: "Total Categories",
-              value: stats.total,
-              icon: FiLayers,
-              color: "amber",
-              progress: 100,
-              description: "All categories",
-            },
-            {
-              label: "Listed",
-              value: stats.listed,
-              icon: FiEye,
-              color: "green",
-              progress: stats.total > 0 ? (stats.listed / stats.total) * 100 : 0,
-              description: "Active categories",
-            },
-            {
-              label: "Unlisted",
-              value: stats.unlisted,
-              icon: FiEyeOff,
-              color: "red",
-              progress: stats.total > 0 ? (stats.unlisted / stats.total) * 100 : 0,
-              description: "Inactive categories",
-            },
-          ].map((stat, index) => (
-            <div
-              key={index}
-              className="backdrop-blur-xl bg-gradient-to-br from-amber-900/10 via-black/20 to-amber-950/10 rounded-2xl border border-amber-500/20 shadow-xl p-6 hover:bg-amber-900/20 transition-all duration-300"
+            { key: "all", label: "All", count: stats.total },
+            { key: "listed", label: "Listed", count: stats.listed },
+            { key: "unlisted", label: "Unlisted", count: stats.unlisted },
+          ].map((f) => (
+            <button
+              key={f.key}
+              onClick={() => setFilterStatus(f.key)}
+              className={`inline-flex items-center gap-2 rounded-md border px-3 py-2 text-sm transition-colors
+                ${
+                  filterStatus === f.key
+                    ? "border-amber-500 text-black bg-amber-500"
+                    : "border-amber-500/20 text-amber-200 hover:bg-neutral-900"
+                }`}
             >
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <p className="text-amber-200/70 text-sm font-medium">{stat.label}</p>
-                  <p className="text-2xl font-bold text-amber-100 mt-1">{stat.value}</p>
-                  <p className="text-amber-300/60 text-xs mt-1">{stat.description}</p>
-                </div>
-                <div
-                  className={`w-12 h-12 rounded-2xl flex items-center justify-center backdrop-blur-sm border ${
-                    stat.color === "amber"
-                      ? "bg-amber-500/20 text-amber-400 border-amber-500/30"
-                      : stat.color === "green"
-                        ? "bg-green-500/20 text-green-400 border-green-500/30"
-                        : "bg-red-500/20 text-red-400 border-red-500/30"
-                  }`}
-                >
-                  <stat.icon size={20} />
-                </div>
-              </div>
-              {/* Progress Bar Visualization */}
-              <div className="w-full bg-black/30 rounded-full h-2 mb-2">
-                <div
-                  className={`h-2 rounded-full transition-all duration-1000 ${
-                    stat.color === "amber"
-                      ? "bg-gradient-to-r from-amber-400 to-amber-600"
-                      : stat.color === "green"
-                        ? "bg-gradient-to-r from-green-400 to-green-600"
-                        : "bg-gradient-to-r from-red-400 to-red-600"
-                  }`}
-                  style={{ width: `${stat.progress}%` }}
-                ></div>
-              </div>
-              <p className="text-amber-300/60 text-xs">{Math.round(stat.progress)}% of total</p>
-            </div>
+              <span>{f.label}</span>
+              <span
+                className={`text-xs rounded-full px-2 py-0.5
+                  ${filterStatus === f.key ? "bg-black/20 text-black/80" : "bg-neutral-900 text-amber-300 border border-amber-500/20"}`}
+              >
+                {f.count}
+              </span>
+            </button>
           ))}
         </div>
 
-        {/* Filter Section */}
-        <div className="backdrop-blur-xl bg-gradient-to-r from-amber-900/10 via-black/20 to-amber-950/10 rounded-3xl border border-amber-500/20 shadow-2xl p-6 mb-8">
-          <div className="flex items-center gap-2 mb-4">
-            <FiFilter className="text-amber-400" />
-            <span className="text-amber-100 font-semibold">Filter Categories</span>
-            <div className="ml-auto flex items-center gap-2 text-amber-300/60 text-sm">
-              <FiBarChart size={16} />
-              <span>{filteredCategories.length} results</span>
-            </div>
-          </div>
-          <div className="flex gap-2 flex-wrap">
-            {[
-              { key: "all", label: "All Categories", count: stats.total },
-              { key: "listed", label: "Listed Only", count: stats.listed },
-              { key: "unlisted", label: "Unlisted Only", count: stats.unlisted },
-            ].map((filter) => (
-              <button
-                key={filter.key}
-                onClick={() => setFilterStatus(filter.key)}
-                className={`px-4 py-2 rounded-xl font-medium transition-all duration-200 flex items-center gap-2 ${
-                  filterStatus === filter.key
-                    ? "bg-gradient-to-r from-amber-400 to-amber-600 text-black"
-                    : "backdrop-blur-md bg-amber-900/10 border border-amber-500/20 text-amber-200 hover:bg-amber-900/20"
-                }`}
-              >
-                {filter.label}
-                <span
-                  className={`text-xs px-2 py-1 rounded-full ${
-                    filterStatus === filter.key ? "bg-black/20 text-black/70" : "bg-amber-500/20 text-amber-300"
-                  }`}
-                >
-                  {filter.count}
-                </span>
-              </button>
-            ))}
-          </div>
-        </div>
+        <button
+          onClick={() => setShowAddForm(true)}
+          className="inline-flex items-center gap-2 rounded-md bg-amber-500 px-4 py-2 font-semibold text-black hover:bg-amber-600 transition-colors"
+        >
+          <FiPlus className="h-4 w-4" />
+          Add Category
+        </button>
+      </section>
 
-        {/* Categories Grid */}
-        <div className="backdrop-blur-xl bg-gradient-to-br from-amber-900/10 via-black/20 to-amber-950/10 rounded-3xl border border-amber-500/20 shadow-2xl overflow-hidden">
-          {isLoading ? (
-            <div className="flex items-center justify-center py-20">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 border-2 border-amber-400 border-t-transparent rounded-full animate-spin"></div>
-                <span className="text-amber-100 font-medium">Loading categories...</span>
-              </div>
+      {/* Table / List */}
+      <section className="rounded-lg border border-amber-500/20 bg-neutral-950">
+        {isLoading ? (
+          <div className="flex items-center justify-center py-20">
+            <div className="flex items-center gap-3">
+              <div className="h-6 w-6 rounded-full border-2 border-amber-400 border-t-transparent animate-spin" />
+              <span className="font-medium text-amber-100">Loading categories...</span>
             </div>
-          ) : filteredCategories.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-20">
-              <div className="w-20 h-20 bg-gradient-to-br from-amber-400/20 to-amber-600/20 rounded-3xl flex items-center justify-center mb-4">
-                <FiLayers className="text-amber-400 text-3xl" />
-              </div>
-              <h3 className="text-xl font-bold text-amber-100 mb-2">No Categories Found</h3>
-              <p className="text-amber-200/70">Create your first category to get started</p>
+          </div>
+        ) : filteredCategories.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-16 text-center">
+            <div className="mb-3 inline-flex h-12 w-12 items-center justify-center rounded-md bg-neutral-900 border border-amber-500/20">
+              <FiLayers className="text-amber-300" />
             </div>
-          ) : (
-            <div className="p-6">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <h3 className="text-lg font-semibold text-amber-50">No Categories Found</h3>
+            <p className="text-sm text-amber-200/70 mt-1">Create your first category to get started</p>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-amber-500/20 bg-neutral-900">
+                  <th scope="col" className="text-left px-4 py-3 font-semibold text-amber-200/80">
+                    Name
+                  </th>
+                  <th scope="col" className="text-left px-4 py-3 font-semibold text-amber-200/80">
+                    ID
+                  </th>
+                  <th scope="col" className="text-left px-4 py-3 font-semibold text-amber-200/80">
+                    Status
+                  </th>
+                  <th scope="col" className="text-right px-4 py-3 font-semibold text-amber-200/80">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
                 {filteredCategories.map((category) => (
-                  <div
-                    key={category._id}
-                    className="backdrop-blur-md bg-gradient-to-br from-amber-900/5 via-black/10 to-amber-950/5 rounded-2xl border border-amber-500/10 overflow-hidden hover:bg-amber-900/10 hover:border-amber-500/20 transition-all duration-300 group"
-                  >
-                    {/* Category Card Header */}
-                    <div className="relative p-6 pb-4">
-                      <div className="flex items-center justify-between mb-3">
-                        <div className="w-12 h-12 bg-gradient-to-br from-amber-400/20 to-amber-600/20 rounded-2xl flex items-center justify-center backdrop-blur-sm border border-amber-500/30">
-                          <FiTag className="text-amber-400" />
-                        </div>
-                        <div
-                          className={`px-3 py-1 rounded-full text-xs font-medium backdrop-blur-sm border ${
-                            category.isListed
-                              ? "bg-green-500/20 text-green-400 border-green-500/30"
-                              : "bg-red-500/20 text-red-400 border-red-500/30"
+                  <tr key={category._id} className="border-b border-amber-500/10 hover:bg-neutral-900/50">
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-2">
+                        <span className="inline-flex h-8 w-8 items-center justify-center rounded-md bg-neutral-900 border border-amber-500/20">
+                          <FiTag className="text-amber-300" />
+                        </span>
+                        <span className="font-medium text-amber-100">{category.name}</span>
+                      </div>
+                    </td>
+                    <td className="px-4 py-3 text-amber-300/70">
+                      <div className="inline-flex items-center gap-1">
+                        <FiTrendingUp className="h-3.5 w-3.5" />
+                        <span>…{category._id.slice(-6)}</span>
+                      </div>
+                    </td>
+                    <td className="px-4 py-3">
+                      <span
+                        className={`inline-flex items-center justify-center rounded-full border px-2.5 py-1 text-xs font-medium
+                          ${
+                            category.isListed ? "border-green-500/30 text-green-400" : "border-red-500/30 text-red-400"
                           }`}
-                        >
-                          {category.isListed ? "Listed" : "Unlisted"}
-                        </div>
-                      </div>
-                      <h3 className="text-amber-100 font-semibold text-lg mb-2 truncate">{category.name}</h3>
-                      <div className="flex items-center gap-1 text-amber-300/60">
-                        <FiTrendingUp size={14} />
-                        <span className="text-xs">ID: {category._id.slice(-6)}</span>
-                      </div>
-                    </div>
-
-                    {/* Category Card Actions */}
-                    <div className="px-6 pb-6">
-                      <div className="flex gap-2">
+                      >
+                        {category.isListed ? "Listed" : "Unlisted"}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center justify-end gap-2">
                         <button
                           onClick={() => {
                             setEditingCategory(category)
                             setUpdatedName(category.name)
                           }}
-                          className="flex-1 py-2 px-3 backdrop-blur-md bg-amber-500/20 text-amber-400 border border-amber-500/30 rounded-xl hover:bg-amber-500/30 transition-all duration-200 flex items-center justify-center gap-2"
+                          className="inline-flex items-center gap-2 rounded-md border border-amber-500/20 bg-neutral-900 px-3 py-2 text-amber-200 hover:bg-neutral-800 transition-colors"
+                          aria-label={`Edit ${category.name}`}
                         >
-                          <FiEdit3 size={16} />
-                          <span className="text-sm">Edit</span>
+                          <FiEdit3 className="h-4 w-4" />
+                          Edit
                         </button>
+
                         <button
-                          onClick={() => handleToggleStatus(category._id)}
-                          className={`p-2 backdrop-blur-md border rounded-xl transition-all duration-200 ${
-                            category.isListed
-                              ? "bg-red-500/20 text-red-400 border-red-500/30 hover:bg-red-500/30"
-                              : "bg-green-500/20 text-green-400 border-green-500/30 hover:bg-green-500/30"
-                          }`}
-                          title={category.isListed ? "Hide Category" : "Show Category"}
+                          onClick={() => confirmToggleStatus(category._id)}
+                          className={`inline-flex items-center justify-center rounded-md border px-3 py-2 transition-colors
+                            ${
+                              category.isListed
+                                ? "border-red-500/30 text-red-400 hover:bg-red-500/10"
+                                : "border-green-500/30 text-green-400 hover:bg-green-500/10"
+                            }`}
+                          title={category.isListed ? "Unlist Category" : "List Category"}
+                          aria-label={category.isListed ? `Unlist ${category.name}` : `List ${category.name}`}
                         >
-                          {category.isListed ? <FiToggleRight size={18} /> : <FiToggleLeft size={18} />}
+                          {category.isListed ? (
+                            <FiToggleRight className="h-4 w-4" />
+                          ) : (
+                            <FiToggleLeft className="h-4 w-4" />
+                          )}
                         </button>
                       </div>
-                    </div>
-                  </div>
+                    </td>
+                  </tr>
                 ))}
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
 
       {/* Add Category Modal */}
       {showAddForm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/70 backdrop-blur-xl" onClick={() => setShowAddForm(false)}></div>
-          <div className="relative w-full max-w-md transform transition-all duration-500 ease-out">
-            <div className="backdrop-blur-2xl bg-gradient-to-br from-amber-900/20 via-black/40 to-amber-950/20 rounded-2xl border border-amber-500/30 shadow-2xl overflow-hidden">
-              <div className="px-6 py-4 border-b border-amber-500/20">
-                <div className="flex justify-between items-center">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-gradient-to-br from-amber-400/20 to-amber-600/20 rounded-xl flex items-center justify-center backdrop-blur-sm border border-amber-500/30">
-                      <FiPlus className="text-amber-400" />
-                    </div>
-                    <div>
-                      <h2 className="text-lg font-bold bg-gradient-to-r from-amber-200 to-amber-400 bg-clip-text text-transparent">
-                        Add Category
-                      </h2>
-                      <p className="text-amber-200/70 text-sm">Create a new menu category</p>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => setShowAddForm(false)}
-                    className="w-8 h-8 rounded-full bg-amber-900/20 hover:bg-amber-900/30 border border-amber-500/30 flex items-center justify-center text-amber-300 hover:text-amber-200 transition-all duration-200"
-                  >
-                    <FiX size={16} />
-                  </button>
-                </div>
+          <div className="absolute inset-0 bg-black/70" onClick={() => setShowAddForm(false)} />
+          <div className="relative w-full max-w-md rounded-lg border border-amber-500/20 bg-neutral-950 p-6">
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-amber-200">Add Category</h2>
+              <button
+                onClick={() => setShowAddForm(false)}
+                className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-amber-500/20 bg-neutral-900 text-amber-200 hover:bg-neutral-800"
+                aria-label="Close add category"
+              >
+                <FiX className="h-4 w-4" />
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="mb-2 block text-sm font-medium text-amber-100">Category Name</label>
+                <input
+                  type="text"
+                  placeholder="Enter category name"
+                  value={newCategory}
+                  onChange={(e) => {
+                    setNewCategory(e.target.value)
+                    setErrors({})
+                  }}
+                  className={`w-full rounded-md border bg-neutral-900 px-3 py-2 text-sm text-amber-100 placeholder:text-amber-300/50 focus:outline-none focus:ring-2 focus:ring-amber-400/30
+                    ${errors.name ? "border-red-500/50" : "border-amber-500/20"}`}
+                />
+                {errors.name && (
+                  <p className="mt-1 inline-flex items-center gap-1 text-xs text-red-400">
+                    <FiAlertCircle className="h-3.5 w-3.5" />
+                    {errors.name}
+                  </p>
+                )}
               </div>
-              <div className="p-6 space-y-4">
-                <div className="group">
-                  <label className="block text-sm font-semibold text-amber-100 mb-2 flex items-center gap-2">
-                    <FiTag className="text-amber-400" />
-                    Category Name
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Enter category name"
-                    value={newCategory}
-                    onChange={(e) => {
-                      setNewCategory(e.target.value)
-                      setErrors({})
-                    }}
-                    className={`w-full px-3 py-3 backdrop-blur-md bg-amber-900/10 border rounded-xl focus:border-amber-400/60 focus:ring-2 focus:ring-amber-400/20 focus:outline-none transition-all duration-300 text-amber-100 placeholder-amber-300/50 text-sm ${
-                      errors.name ? "border-red-500/50" : "border-amber-500/30"
-                    }`}
-                  />
-                  {errors.name && (
-                    <p className="text-red-400 text-xs mt-1 flex items-center gap-1">
-                      <FiAlertCircle size={12} />
-                      {errors.name}
-                    </p>
-                  )}
-                </div>
-                <div className="flex gap-3">
-                  <button
-                    onClick={handleAddCategory}
-                    className="flex-1 py-3 bg-gradient-to-r from-amber-400 to-amber-600 text-black font-bold rounded-xl hover:from-amber-500 hover:to-amber-700 transition-all duration-300 transform hover:scale-[1.02] flex items-center justify-center gap-2"
-                  >
-                    <FiCheck size={16} />
-                    Add Category
-                  </button>
-                  <button
-                    onClick={() => setShowAddForm(false)}
-                    className="px-4 py-3 backdrop-blur-md bg-amber-900/10 border border-amber-500/30 text-amber-200 rounded-xl hover:bg-amber-900/20 transition-all duration-200"
-                  >
-                    Cancel
-                  </button>
-                </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={handleAddCategory}
+                  className="inline-flex flex-1 items-center justify-center gap-2 rounded-md bg-amber-500 px-4 py-2 font-semibold text-black hover:bg-amber-600"
+                >
+                  <FiCheck className="h-4 w-4" />
+                  Add Category
+                </button>
+                <button
+                  onClick={() => setShowAddForm(false)}
+                  className="inline-flex items-center justify-center rounded-md border border-amber-500/20 bg-neutral-900 px-4 py-2 text-amber-200 hover:bg-neutral-800"
+                >
+                  Cancel
+                </button>
               </div>
             </div>
           </div>
@@ -438,84 +376,109 @@ const CategoryManagement = () => {
       {editingCategory && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div
-            className="absolute inset-0 bg-black/70 backdrop-blur-xl"
+            className="absolute inset-0 bg-black/70"
             onClick={() => {
               setEditingCategory(null)
               setUpdatedName("")
               setEditError("")
             }}
-          ></div>
-          <div className="relative w-full max-w-md transform transition-all duration-500 ease-out">
-            <div className="backdrop-blur-2xl bg-gradient-to-br from-amber-900/20 via-black/40 to-amber-950/20 rounded-2xl border border-amber-500/30 shadow-2xl overflow-hidden">
-              <div className="px-6 py-4 border-b border-amber-500/20">
-                <div className="flex justify-between items-center">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-gradient-to-br from-amber-400/20 to-amber-600/20 rounded-xl flex items-center justify-center backdrop-blur-sm border border-amber-500/30">
-                      <FiEdit3 className="text-amber-400" />
-                    </div>
-                    <div>
-                      <h2 className="text-lg font-bold bg-gradient-to-r from-amber-200 to-amber-400 bg-clip-text text-transparent">
-                        Edit Category
-                      </h2>
-                      <p className="text-amber-200/70 text-sm">Update category information</p>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => {
-                      setEditingCategory(null)
-                      setUpdatedName("")
-                      setEditError("")
-                    }}
-                    className="w-8 h-8 rounded-full bg-amber-900/20 hover:bg-amber-900/30 border border-amber-500/30 flex items-center justify-center text-amber-300 hover:text-amber-200 transition-all duration-200"
-                  >
-                    <FiX size={16} />
-                  </button>
-                </div>
+          />
+          <div className="relative w-full max-w-md rounded-lg border border-amber-500/20 bg-neutral-950 p-6">
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-amber-200">Edit Category</h2>
+              <button
+                onClick={() => {
+                  setEditingCategory(null)
+                  setUpdatedName("")
+                  setEditError("")
+                }}
+                className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-amber-500/20 bg-neutral-900 text-amber-200 hover:bg-neutral-800"
+                aria-label="Close edit category"
+              >
+                <FiX className="h-4 w-4" />
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="mb-2 block text-sm font-medium text-amber-100">Category Name</label>
+                <input
+                  type="text"
+                  placeholder="Update category name"
+                  value={updatedName}
+                  onChange={(e) => {
+                    setUpdatedName(e.target.value)
+                    setEditError("")
+                  }}
+                  className={`w-full rounded-md border bg-neutral-900 px-3 py-2 text-sm text-amber-100 placeholder:text-amber-300/50 focus:outline-none focus:ring-2 focus:ring-amber-400/30
+                    ${editError ? "border-red-500/50" : "border-amber-500/20"}`}
+                />
+                {editError && (
+                  <p className="mt-1 inline-flex items-center gap-1 text-xs text-red-400">
+                    <FiAlertCircle className="h-3.5 w-3.5" />
+                    {editError}
+                  </p>
+                )}
               </div>
-              <div className="p-6 space-y-4">
-                <div className="group">
-                  <label className="block text-sm font-semibold text-amber-100 mb-2 flex items-center gap-2">
-                    <FiTag className="text-amber-400" />
-                    Category Name
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Update category name"
-                    value={updatedName}
-                    onChange={(e) => {
-                      setUpdatedName(e.target.value)
-                      setEditError("")
-                    }}
-                    className={`w-full px-3 py-3 backdrop-blur-md bg-amber-900/10 border rounded-xl focus:border-amber-400/60 focus:ring-2 focus:ring-amber-400/20 focus:outline-none transition-all duration-300 text-amber-100 placeholder-amber-300/50 text-sm ${
-                      editError ? "border-red-500/50" : "border-amber-500/30"
-                    }`}
-                  />
-                  {editError && (
-                    <p className="text-red-400 text-xs mt-1 flex items-center gap-1">
-                      <FiAlertCircle size={12} />
-                      {editError}
-                    </p>
-                  )}
-                </div>
-                <div className="flex gap-3">
-                  <button
-                    onClick={handleUpdateCategory}
-                    className="flex-1 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white font-bold rounded-xl hover:from-green-600 hover:to-green-700 transition-all duration-300 transform hover:scale-[1.02] flex items-center justify-center gap-2"
-                  >
-                    <FiSave size={16} />
-                    Save Changes
-                  </button>
-                  <button
-                    onClick={() => {
-                      setEditingCategory(null)
-                      setUpdatedName("")
-                      setEditError("")
-                    }}
-                    className="px-4 py-3 backdrop-blur-md bg-amber-900/10 border border-amber-500/30 text-amber-200 rounded-xl hover:bg-amber-900/20 transition-all duration-200"
-                  >
-                    Cancel
-                  </button>
-                </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={handleUpdateCategory}
+                  className="inline-flex flex-1 items-center justify-center gap-2 rounded-md bg-green-600 px-4 py-2 font-semibold text-white hover:bg-green-700"
+                >
+                  <FiSave className="h-4 w-4" />
+                  Save Changes
+                </button>
+                <button
+                  onClick={() => {
+                    setEditingCategory(null)
+                    setUpdatedName("")
+                    setEditError("")
+                  }}
+                  className="inline-flex items-center justify-center rounded-md border border-amber-500/20 bg-neutral-900 px-4 py-2 text-amber-200 hover:bg-neutral-800"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Confirmation Modal */}
+      {showConfirmModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/70" onClick={() => setShowConfirmModal(false)} />
+          <div className="relative w-full max-w-md rounded-lg border border-amber-500/20 bg-neutral-950 p-6">
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-amber-200">Confirm Action</h2>
+              <button
+                onClick={() => setShowConfirmModal(false)}
+                className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-amber-500/20 bg-neutral-900 text-amber-200 hover:bg-neutral-800"
+                aria-label="Close confirm"
+              >
+                <FiX className="h-4 w-4" />
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              <p className="text-amber-200">
+                Are you sure you want to{" "}
+                {categories.find((c) => c._id === categoryToToggle)?.isListed ? "unlist" : "list"} this category?
+              </p>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => handleToggleStatus(categoryToToggle)}
+                  className="inline-flex flex-1 items-center justify-center rounded-md bg-amber-500 px-4 py-2 font-semibold text-black hover:bg-amber-600"
+                >
+                  Confirm
+                </button>
+                <button
+                  onClick={() => setShowConfirmModal(false)}
+                  className="inline-flex items-center justify-center rounded-md border border-amber-500/20 bg-neutral-900 px-4 py-2 text-amber-200 hover:bg-neutral-800"
+                >
+                  Cancel
+                </button>
               </div>
             </div>
           </div>
